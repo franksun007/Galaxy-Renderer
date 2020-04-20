@@ -34,7 +34,6 @@ cc_library(
     deps = [
         ":Constants",
         ":Galaxy",
-        ":OrbitCalculator",
         ":SDLWnd",
         ":Star",
         "//third_party/specrend",
@@ -75,12 +74,6 @@ cc_library(
         ":Constants",
         ":OrbitCalculator",
     ],
-)
-
-cc_library(
-    name = "Types",
-    srcs = ["Types.cpp"],
-    hdrs = ["Types.h"],
 )
 
 cc_library(

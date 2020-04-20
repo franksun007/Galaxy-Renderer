@@ -15,7 +15,6 @@
 #include <stdexcept>
 
 #include "Constants.h"
-#include "OrbitCalculator.h"
 #include "Star.h"
 #include "third_party/specrend/specrend.h"
 
@@ -180,11 +179,6 @@ void NBodyWnd::DrawEllipsis(double a, double b, double angle) {
 
     fx += (a / m_galaxy.GetPertAmp()) * sin(alpha * 2 * m_galaxy.GetPertN());
     fy += (a / m_galaxy.GetPertAmp()) * cos(alpha * 2 * m_galaxy.GetPertN());
-
-    // geht so nicht:
-    //    pos = OrbitCalculator::Compute(angle, a, b, (double)i, vecNull,
-    //    m_galaxy.GetPertN(), m_galaxy.GetPertAmp()); fx = (GLfloat)pos.x; fy =
-    //    (GLfloat)pos.y;
 
     glVertex3f(fx, fy, 0);
   }
