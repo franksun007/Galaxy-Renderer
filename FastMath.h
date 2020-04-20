@@ -1,20 +1,31 @@
-#ifndef _FAST_MATH_H
-#define _FAST_MATH_H
+#ifndef __GALAXY_RENDERER_FAST_MATH_H__
+#define __GALAXY_RENDERER_FAST_MATH_H__
 
 //------------------------------------------------------------------------------------
 #include <cmath>
 
+namespace FastMath {
+
+// TODO(Frank): Factor out inline to ALWAYS_INLINE
+
 //--------------------------------------------------------------------------------
-double IntensityDisk(double r, double i0, double a);
+// Helligkeitsverteilung einer elliptischen Galaxie als Funktion des Radius
+// nach Freeman
+static inline double IntensityDisk(double r, double i0, double a) { return i0 * exp(-r / a); }
 
 //--------------------------------------------------------------------------------
 // Intensitätsverteilung im Zentralbereich
-double IntensityBulge(double r, double i0, double k);
+static inline double IntensityBulge(double r, double i0, double k) {
+  return i0 * exp(-k * pow(r, 0.25));
+}
 
 //--------------------------------------------------------------------------------
 // Intensitätsverteilung Scheibe und Zentralbereich
-double Intensity(double r, double r_bulge, double i0, double a, double k);
-
+static inline double Intensity(double r, double r_bulge, double i0, double a, double k) {
+  return (r < r_bulge)
+             ? IntensityBulge(r, i0, k)
+             : IntensityDisk(r - r_bulge, IntensityBulge(r_bulge, i0, k), a);
+}
 //------------------------------------------------------------------------------------
 /** \brief Fast math functions using table lookup or other optimizations. */
 class FastMath {
@@ -36,4 +47,6 @@ private:
   static double *s_cos;
 };
 
-#endif
+}  // namespace FastMath
+
+#endif  // __GALAXY_RENDERER_FAST_MATH_H__

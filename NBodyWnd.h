@@ -1,12 +1,6 @@
-/*
- * File:   NBodyWnd.h
- * Author: user
- *
- * Created on 8. Juli 2009, 21:54
- */
 
-#ifndef _NBODYWND_H
-#define _NBODYWND_H
+#ifndef __GALAXY_RENDERER_NBODYWND_H__
+#define __GALAXY_RENDERER_NBODYWND_H__
 
 #include <fstream>
 #include <stdint.h>
@@ -77,4 +71,4 @@ private:
   Color m_col[200];
 };
 
-#endif /* _NBODYWND_H */
+#endif // __GALAXY_RENDERER_NBODYWND_H__ 

@@ -7,6 +7,7 @@ cc_library(
     name = "CumulativeDistributionFunction",
     srcs = ["CumulativeDistributionFunction.cpp"],
     hdrs = ["CumulativeDistributionFunction.h"],
+    deps = [":FastMath"]
 )
 
 cc_library(
@@ -98,21 +99,15 @@ cc_library(
 
 cc_library(
     name = "Vector",
-    srcs = ["Vector.cpp"],
     hdrs = ["Vector.h"],
 )
 
 cc_binary(
     name = "Galaxy-Renderer",
     srcs = ["main.cpp"],
-    data = [":texture"],
+    data = ["//textures:textures"],
     deps = [
         ":NBodyWnd",
     ],
 )
 
-# TODO(Frank): Texture in its own folder
-filegroup(
-    name = "texture",
-    srcs = glob(["*.bmp"]),
-)

@@ -1,5 +1,5 @@
-#ifndef STAR_H
-#define STAR_H
+#ifndef __GALAXY_RENDERER_STAR_H__
+#define __GALAXY_RENDERER_STAR_H__
 
 #include "Vector.h"
 
@@ -28,4 +28,4 @@ public:
   Vec2D m_pos;       // current position in kartesion koordinates
 };
 
-#endif
+#endif  // __GALAXY_RENDERER_STAR_H__

@@ -1,10 +1,10 @@
-#ifndef _VECTOR_H
-#define _VECTOR_H
+#ifndef __GALAXY_RENDERER_VECTOR_H__
+#define __GALAXY_RENDERER_VECTOR_H__
 
 //------------------------------------------------------------------------------
 struct Vec2D {
 public:
-  Vec2D(double x = 0, double y = 0);
+  Vec2D(const double x_ = 0, const double y_ = 0): x(x_), y(y_) {}
   double x;
   double y;
 };
@@ -12,10 +12,10 @@ public:
 //------------------------------------------------------------------------------
 struct Vec3D {
 public:
-  Vec3D(double x = 0, double y = 0, double z = 0);
+  Vec3D(const double x_ = 0, const double y_ = 0, const double z_ = 0) : x(x_), y(y_), z(z_) {}
   double x;
   double y;
   double z;
 };
 
-#endif //_VECTOR_H
+#endif // __GALAXY_RENDERER_VECTOR_H__

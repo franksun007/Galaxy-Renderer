@@ -1,5 +1,5 @@
-#ifndef _GALAXY_H
-#define _GALAXY_H
+#ifndef __GALAXY_RENDERER_GALAXY_H__
+#define __GALAXY_RENDERER_GALAXY_H__
 
 #include "Vector.h"
 
@@ -111,4 +111,4 @@ private:
   Star *m_pH2;
 };
 
-#endif // _GALAXY_H
+#endif // __GALAXY_RENDERER_GALAXY_H__

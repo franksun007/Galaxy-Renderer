@@ -1,5 +1,5 @@
-#ifndef _CUMULATIVE_DISTRIBUTION_FUNCTION_H
-#define _CUMULATIVE_DISTRIBUTION_FUNCTION_H
+#ifndef __GALAXY_RENDERER_CUMULATIVE_DISTRIBUTION_FUNCTION_H__
+#define __GALAXY_RENDERER_CUMULATIVE_DISTRIBUTION_FUNCTION_H__
 
 //-------------------------------------------------------------------------------------------------
 #include <vector>
@@ -45,4 +45,4 @@ private:
   double Intensity(double x);
 };
 
-#endif // CUMULATIVEDISTRIBUTIONFUNCTION_H
+#endif // __GALAXY_RENDERER_CUMULATIVE_DISTRIBUTION_FUNCTION_H__

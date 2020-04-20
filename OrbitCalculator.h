@@ -1,5 +1,5 @@
-#ifndef ORBIT_CALCULATOR_H
-#define ORBIT_CALCULATOR_H
+#ifndef __GALAXY_RENDERER_ORBIT_CALCULATOR_H__
+#define __GALAXY_RENDERER_ORBIT_CALCULATOR_H__
 
 #include "Vector.h"
 
@@ -9,4 +9,4 @@ public:
                        const Vec2D &p, int pertN, double pertAmp);
 };
 
-#endif
+#endif  // __GALAXY_RENDERER_ORBIT_CALCULATOR_H__

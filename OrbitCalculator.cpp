@@ -1,6 +1,8 @@
 #include "OrbitCalculator.h"
-#include "Constants.h"
+
 #include <cmath>
+
+#include "Constants.h"
 
 using namespace std;
 

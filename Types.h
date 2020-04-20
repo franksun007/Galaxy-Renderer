@@ -1,5 +1,5 @@
-#ifndef _TYPES_H
-#define _TYPES_H
+#ifndef __GALAXY_RENDERER_TYPES_H__
+#define __GALAXY_RENDERER_TYPES_H__
 
 #pragma pack(push, 1)
 
@@ -40,4 +40,4 @@ struct ParticleData {
   PODAuxState *m_pAuxState;
 };
 
-#endif // _TYPES_H
+#endif // __GALAXY_RENDERER_TYPES_H__

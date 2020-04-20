@@ -1,8 +1,12 @@
 #include "FastMath.h"
+
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+
+
+namespace FastMath {
 
 //--------------------------------------------------------------------------------
 int FastMath::s_num = 0;
@@ -71,21 +75,4 @@ double FastMath::nvzz(double m, double s) {
   return s * sum + m;
 }
 
-//--------------------------------------------------------------------------------
-// Helligkeitsverteilung einer elliptischen Galaxie als Funktion des Radius
-// nach Freeman
-double IntensityDisk(double r, double i0, double a) { return i0 * exp(-r / a); }
-
-//--------------------------------------------------------------------------------
-// Intensitätsverteilung im Zentralbereich
-double IntensityBulge(double r, double i0, double k) {
-  return i0 * exp(-k * pow(r, 0.25));
-}
-
-//--------------------------------------------------------------------------------
-// Intensitätsverteilung Scheibe und Zentralbereich
-double Intensity(double r, double r_bulge, double i0, double a, double k) {
-  return (r < r_bulge)
-             ? IntensityBulge(r, i0, k)
-             : IntensityDisk(r - r_bulge, IntensityBulge(r_bulge, i0, k), a);
-}
+}  // namespace FastMath

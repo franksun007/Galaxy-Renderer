@@ -1,5 +1,5 @@
-#ifndef _GALAXY_PROP_H
-#define _GALAXY_PROP_H
+#ifndef __GALAXY_RENDERER_GALAXY_PROP_H__
+#define __GALAXY_RENDERER_GALAXY_PROP_H__
 
 //-------------------------------------------------------------------------------------------
 /** \brief Encapsulates the data needed to define the galaxies shape. */
@@ -31,4 +31,4 @@ public:
                         ///< circular shape
 };
 
-#endif // _GALAXY_PROP_H
+#endif // __GALAXY_RENDERER_GALAXY_PROP_H__

@@ -1,5 +1,5 @@
-#ifndef _CONSTANTS_H
-#define _CONSTANTS_H
+#ifndef __GALAXY_RENDERER_CONSTANTS_H__
+#define __GALAXY_RENDERER_CONSTANTS_H__
 
 #include <cmath>
 
@@ -20,4 +20,4 @@ public:
   static constexpr double RAD_TO_DEG = 180.0 / M_PI;
 };
 
-#endif // _CONSTANTS_H
+#endif // __GALAXY_RENDERER_CONSTANTS_H__

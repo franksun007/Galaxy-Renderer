@@ -5,6 +5,7 @@
  * Created on 8. Juli 2009, 21:54
  */
 #include "NBodyWnd.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cmath>

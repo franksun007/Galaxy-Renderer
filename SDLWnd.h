@@ -1,5 +1,5 @@
-#ifndef _SDL_WINDOW_H
-#define _SDL_WINDOW_H
+#ifndef __GALAXY_RENDERER_SDL_WINDOW_H__
+#define __GALAXY_RENDERER_SDL_WINDOW_H__
 
 //--- Standard includes --------------------------------------------------------
 #include <string>
@@ -108,4 +108,4 @@ private:
   void InitPointSpriteExtension();
 };
 
-#endif
+#endif  // __GALAXY_RENDERER_SDL_WINDOW_H__
