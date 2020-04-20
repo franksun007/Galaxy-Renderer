@@ -7,13 +7,6 @@ cc_library(
     name = "CumulativeDistributionFunction",
     srcs = ["CumulativeDistributionFunction.cpp"],
     hdrs = ["CumulativeDistributionFunction.h"],
-    deps = [":FastMath"]
-)
-
-cc_library(
-    name = "FastMath",
-    srcs = ["FastMath.cpp"],
-    hdrs = ["FastMath.h"],
 )
 
 cc_library(
@@ -23,7 +16,6 @@ cc_library(
     deps = [
         ":Constants",
         ":CumulativeDistributionFunction",
-        ":FastMath",
         ":Star",
         ":Vector",
     ],
@@ -36,17 +28,11 @@ cc_library(
 )
 
 cc_library(
-    name = "Intensity",
-    hdrs = ["Intensity.h"],
-)
-
-cc_library(
     name = "NBodyWnd",
     srcs = ["NBodyWnd.cpp"],
     hdrs = ["NBodyWnd.h"],
     deps = [
         ":Constants",
-        ":FastMath",
         ":Galaxy",
         ":OrbitCalculator",
         ":SDLWnd",

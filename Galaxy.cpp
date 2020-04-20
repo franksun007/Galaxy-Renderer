@@ -8,7 +8,6 @@
 //------------------------------------------------------------------------
 #include "Constants.h"
 #include "CumulativeDistributionFunction.h"
-#include "FastMath.h"
 #include "Star.h"
 
 //------------------------------------------------------------------------
@@ -26,7 +25,6 @@ Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1,
       m_pertAmp(0), m_time(0), m_timeStep(0), m_bHasDarkMatter(true),
       m_pos(0, 0), m_pStars(nullptr), m_pDust(nullptr), m_pH2(nullptr),
       m_dustRenderSize(70) {
-  FastMath::FastMath::init();
 }
 
 //------------------------------------------------------------------------
@@ -34,7 +32,6 @@ Galaxy::~Galaxy() {
   delete[] m_pStars;
   delete[] m_pDust;
   delete[] m_pH2;
-  FastMath::FastMath::release();
 }
 
 //------------------------------------------------------------------------

@@ -15,7 +15,6 @@
 #include <stdexcept>
 
 #include "Constants.h"
-#include "FastMath.h"
 #include "OrbitCalculator.h"
 #include "Star.h"
 #include "third_party/specrend/specrend.h"

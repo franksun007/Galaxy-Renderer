@@ -1,12 +1,9 @@
 #include "CumulativeDistributionFunction.h"
-
 #include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <stdexcept>
-
-#include "FastMath.h"
 
 using namespace std;
 
@@ -141,16 +138,19 @@ double CumulativeDistributionFunction::ValFromProb(double fVal) {
 //-------------------------------------------------------------------------------------------------
 double CumulativeDistributionFunction::IntensityBulge(double R, double I0,
                                                       double k) {
-  return FastMath::IntensityBulge(R, I0, k);
+  return I0 * exp(-k * pow(R, 0.25));
 }
 
 //-------------------------------------------------------------------------------------------------
 double CumulativeDistributionFunction::IntensityDisc(double R, double I0,
                                                      double a) {
-  return FastMath::IntensityDisk(R, I0, a);
+  return I0 * exp(-R / a);
 }
 
 //-------------------------------------------------------------------------------------------------
 double CumulativeDistributionFunction::Intensity(double x) {
-  return FastMath::Intensity(x, m_RBulge, m_I0, m_a, m_k);
+  return (x < m_RBulge)
+             ? IntensityBulge(x, m_I0, m_k)
+             : IntensityDisc(x - m_RBulge, IntensityBulge(m_RBulge, m_I0, m_k),
+                             m_a);
 }
