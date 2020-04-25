@@ -116,15 +116,15 @@ Vec3D SDLWindow::GetOGLPos(int x, int y) {
   GLint viewport[4];
   GLdouble modelview[16];
   GLdouble projection[16];
-  GLfloat winX, winY, winZ;
+  GLdouble winX, winY, winZ;
   GLdouble posX, posY, posZ;
 
   glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
   glGetDoublev(GL_PROJECTION_MATRIX, projection);
   glGetIntegerv(GL_VIEWPORT, viewport);
 
-  winX = (float)x;
-  winY = (float)viewport[3] - (float)y;
+  winX = (double)x;
+  winY = (double)viewport[3] - (double)y;
   glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
 
   gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY,
@@ -134,7 +134,7 @@ Vec3D SDLWindow::GetOGLPos(int x, int y) {
 }
 
 //-----------------------------------------------------------------------
-SDLWindow::SDLWindow(int width, int height, double axisLen,
+SDLWindow::SDLWindow(int width, int height, float axisLen,
                      const std::string &caption)
     : m_event(), m_fov(axisLen), m_width(0), m_height(0), m_fps(0),
       m_idxSnapshot(0), m_camPos(0, 0, 2), m_camLookAt(0, 0, 0),
@@ -312,7 +312,7 @@ void SDLWindow::SaveToTGA(const std::string &sName) {
 }
 
 //------------------------------------------------------------------------------
-void SDLWindow::ScaleAxis(double scale) {
+void SDLWindow::ScaleAxis(float scale) {
   m_fov *= scale;
   AdjustCamera();
 }
@@ -346,7 +346,7 @@ void SDLWindow::AdjustCamera() {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  double l = m_fov / 2.0;
+  float l = m_fov / 2.0;
   glOrtho(-l, l, -l, l, -l, l);
   gluLookAt(m_camPos.x, m_camPos.y, m_camPos.z, m_camLookAt.x, m_camLookAt.y,
             m_camLookAt.z, m_camOrient.x, m_camOrient.y, m_camOrient.z);
@@ -359,7 +359,7 @@ void SDLWindow::SetCaption(const std::string &caption) {
 }
 
 //-----------------------------------------------------------------------
-double SDLWindow::GetFOV() const { return m_fov; }
+float SDLWindow::GetFOV() const { return m_fov; }
 
 //-----------------------------------------------------------------------
 int SDLWindow::GetFPS() const { return m_fps; }
@@ -368,7 +368,7 @@ int SDLWindow::GetFPS() const { return m_fps; }
 void SDLWindow::DrawAxis(const Vec2D &origin) {
   glColor3f((GLfloat)0.3, (GLfloat)0.3, (GLfloat)0.3);
 
-  double s = std::pow(10, (int)(log10(m_fov / 2))), l = m_fov / 100, p = 0;
+  float s = std::pow(10, (int)(log10(m_fov / 2))), l = m_fov / 100, p = 0;
 
   glPushMatrix();
   glTranslated(origin.x, origin.y, 0);
@@ -414,7 +414,7 @@ void SDLWindow::DrawAxis(const Vec2D &origin) {
 */
 void SDLWindow::MainLoop() {
   int ct = 0;
-  double dt = 0;
+  float dt = 0;
   time_t t1(time(NULL)), t2;
 
   while (m_bRunning) {
@@ -425,7 +425,7 @@ void SDLWindow::MainLoop() {
     t2 = time(NULL);
     dt = difftime(t2, t1);
     if (dt > 1) {
-      m_fps = (int)((double)ct / dt);
+      m_fps = (int)((float)ct / dt);
       ct = 0;
       t1 = t2;
     }

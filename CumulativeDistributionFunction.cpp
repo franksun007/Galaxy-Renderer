@@ -13,9 +13,9 @@ CumulativeDistributionFunction::CumulativeDistributionFunction()
       m_vX2() {}
 
 //-------------------------------------------------------------------------------------------------
-void CumulativeDistributionFunction::SetupRealistic(double I0, double k,
-                                                    double a, double RBulge,
-                                                    double min, double max,
+void CumulativeDistributionFunction::SetupRealistic(float I0, float k,
+                                                    float a, float RBulge,
+                                                    float min, float max,
                                                     int nSteps) {
   m_fMin = min;
   m_fMax = max;
@@ -34,8 +34,8 @@ void CumulativeDistributionFunction::SetupRealistic(double I0, double k,
 
 //-------------------------------------------------------------------------------------------------
 void CumulativeDistributionFunction::BuildCDF(int nSteps) {
-  double h = (m_fMax - m_fMin) / nSteps;
-  double x = 0, y = 0;
+  float h = (m_fMax - m_fMin) / nSteps;
+  float x = 0, y = 0;
 
   m_vX1.clear();
   m_vY1.clear();
@@ -77,10 +77,10 @@ void CumulativeDistributionFunction::BuildCDF(int nSteps) {
   m_vX2.push_back(0.0);
   m_vY2.push_back(0.0);
 
-  double p = 0;
+  float p = 0;
   h = 1.0 / nSteps;
   for (int i = 1, k = 0; i < nSteps; ++i) {
-    p = (double)i * h;
+    p = (float)i * h;
 
     for (; m_vY1[k + 1] <= p; ++k) {
     }
@@ -106,13 +106,13 @@ void CumulativeDistributionFunction::BuildCDF(int nSteps) {
 CumulativeDistributionFunction::~CumulativeDistributionFunction() {}
 
 //-------------------------------------------------------------------------------------------------
-double CumulativeDistributionFunction::ProbFromVal(double fVal) {
+float CumulativeDistributionFunction::ProbFromVal(float fVal) {
   if (fVal < m_fMin || fVal > m_fMax)
     throw std::runtime_error("out of range");
 
-  double h = 2 * ((m_fMax - m_fMin) / m_nSteps);
+  float h = 2 * ((m_fMax - m_fMin) / m_nSteps);
   int i = (int)((fVal - m_fMin) / h);
-  double remainder = fVal - i * h;
+  float remainder = fVal - i * h;
 
   //  printf("fVal=%2.2f; h=%2.2f; i=%d; m_vVal[i]=%2.2f; m_vAsc[i]=%2.2f;\n",
   //  fVal, h, i, m_vVal[i], m_vAsc[i]);
@@ -122,33 +122,33 @@ double CumulativeDistributionFunction::ProbFromVal(double fVal) {
 }
 
 //-------------------------------------------------------------------------------------------------
-double CumulativeDistributionFunction::ValFromProb(double fVal) {
+float CumulativeDistributionFunction::ValFromProb(float fVal) {
   if (fVal < 0 || fVal > 1)
     throw std::runtime_error("out of range");
 
-  double h = 1.0 / (m_vY2.size() - 1);
+  float h = 1.0 / (m_vY2.size() - 1);
 
   int i = (int)(fVal / h);
-  double remainder = fVal - i * h;
+  float remainder = fVal - i * h;
 
   assert(i >= 0 && i < (int)m_vM2.size());
   return (m_vY2[i] + m_vM2[i] * remainder) /* / m_vVal.back()*/;
 }
 
 //-------------------------------------------------------------------------------------------------
-double CumulativeDistributionFunction::IntensityBulge(double R, double I0,
-                                                      double k) {
+float CumulativeDistributionFunction::IntensityBulge(float R, float I0,
+                                                      float k) {
   return I0 * exp(-k * pow(R, 0.25));
 }
 
 //-------------------------------------------------------------------------------------------------
-double CumulativeDistributionFunction::IntensityDisc(double R, double I0,
-                                                     double a) {
+float CumulativeDistributionFunction::IntensityDisc(float R, float I0,
+                                                     float a) {
   return I0 * exp(-R / a);
 }
 
 //-------------------------------------------------------------------------------------------------
-double CumulativeDistributionFunction::Intensity(double x) {
+float CumulativeDistributionFunction::Intensity(float x) {
   return (x < m_RBulge)
              ? IntensityBulge(x, m_I0, m_k)
              : IntensityDisc(x - m_RBulge, IntensityBulge(m_RBulge, m_I0, m_k),

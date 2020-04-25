@@ -6,8 +6,8 @@
 class OrbitCalculator {
 
 public:
-  static Vec2D Compute(double angle, double a, double b, double theta,
-                       const Vec2D &p, int pertN, double pertAmp);
+  static Vec2D Compute(float angle, float a, float b, float theta,
+                       const Vec2D &p, int pertN, float pertAmp);
 };
 
 #endif // __GALAXY_RENDERER_ORBIT_CALCULATOR_H__

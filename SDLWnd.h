@@ -31,7 +31,7 @@
 /** \brief Basic infrastructure for grafical output using SDL/OpenGL */
 class SDLWindow {
 public:
-  SDLWindow(int width, int height, double axisLen, const std::string &caption);
+  SDLWindow(int width, int height, float axisLen, const std::string &caption);
   virtual ~SDLWindow();
   void MainLoop();
   void ExitMainLoop();
@@ -68,8 +68,8 @@ protected:
   // misc
   //-----------------------------------------
 
-  void ScaleAxis(double scale);
-  double GetFOV() const;
+  void ScaleAxis(float scale);
+  float GetFOV() const;
   SDL_Surface *Surface();
   SDL_Event m_event;
 
@@ -82,7 +82,7 @@ protected:
   static GLuint s_fontBase;
 
 protected:
-  double m_fov; ///< Length of an axis
+  float m_fov; ///< Length of an axis
   int m_width;  ///< Width of the window in pixel
   int m_height; ///< Height of the window in pixel
   int m_fps;

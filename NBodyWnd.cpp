@@ -29,7 +29,7 @@ NBodyWnd::NBodyWnd(const int sz_w, const int sz_h, const std::string caption)
       m_flags(dspSTARS | dspAXIS | dspHELP | dspDUST | dspH2),
       m_bDumpImage(false), m_galaxy(), m_colNum(200), m_t0(1000), m_t1(10000),
       m_dt((m_t1 - m_t0) / m_colNum) {
-  double x, y, z;
+  float x, y, z;
   for (int i = 0; i < m_colNum; ++i) {
     Color &col = m_col[i];
     colourSystem *cs = &SMPTEsystem;
@@ -154,26 +154,26 @@ void NBodyWnd::Render() {
   SDL_GL_SwapBuffers();
 }
 
-void NBodyWnd::DrawEllipsis(double a, double b, double angle) {
+void NBodyWnd::DrawEllipsis(float a, float b, float angle) {
   const int steps = 100;
-  const double x = 0;
-  const double y = 0;
+  const float x = 0;
+  const float y = 0;
 
   // Angle is given by Degree Value
-  double beta =
+  float beta =
       -angle *
       constants::DEG_TO_RAD; //(Math.PI/180) converts Degree Value into Radians
-  double sinbeta = sin(beta);
-  double cosbeta = cos(beta);
+  float sinbeta = sin(beta);
+  float cosbeta = cos(beta);
 
   glBegin(GL_LINE_STRIP);
 
   Vec2D pos;
   Vec2D vecNull;
   for (int i = 0; i < 361; i += 360 / steps) {
-    double alpha = i * constants::DEG_TO_RAD;
-    double sinalpha = sin(alpha);
-    double cosalpha = cos(alpha);
+    float alpha = i * constants::DEG_TO_RAD;
+    float sinalpha = sin(alpha);
+    float cosalpha = cos(alpha);
 
     GLfloat fx = x + (a * cosalpha * cosbeta - b * sinalpha * sinbeta);
     GLfloat fy = y + (a * cosalpha * sinbeta + b * sinalpha * cosbeta);
@@ -190,16 +190,16 @@ void NBodyWnd::DrawEllipsis(double a, double b, double angle) {
 void NBodyWnd::DrawVelocity() {
   Star *pStars = m_galaxy.GetStars();
 
-  double dt_in_sec = m_galaxy.GetTimeStep() * constants::SEC_PER_YEAR;
+  float dt_in_sec = m_galaxy.GetTimeStep() * constants::SEC_PER_YEAR;
   glPointSize(1);
   glColor3f(0.5, 0.7, 0.5);
   glBegin(GL_POINTS);
   for (int i = 0; i < m_galaxy.GetNumStars(); ++i) {
     const Vec2D &vel = pStars[i].m_vel;
-    double r = pStars[i].m_a; //(pStars[i].m_a + pStars[i].m_b)/2;
+    float r = pStars[i].m_a; //(pStars[i].m_a + pStars[i].m_b)/2;
 
     // umrechnen in km/s
-    double v = sqrt(vel.x * vel.x + vel.y * vel.y); // pc / timestep
+    float v = sqrt(vel.x * vel.x + vel.y * vel.y); // pc / timestep
     v /= dt_in_sec;                                 // v in pc/sec
     v *= constants::PC_TO_KM;                       // v in km/s
 
@@ -210,7 +210,7 @@ void NBodyWnd::DrawVelocity() {
     // Draw Mass Distribution
     glBegin(GL_LINE_STRIP);
     glColor3f(0.5, 0.5, 0.7);
-    double dh = m_galaxy.GetFarFieldRad()/100.0;
+    float dh = m_galaxy.GetFarFieldRad()/100.0;
     for (int i=0; i<100; ++i)
     {
       glVertex3f(i*dh, m_galaxy.m_numberByRad[i], 0.0f);
@@ -218,12 +218,12 @@ void NBodyWnd::DrawVelocity() {
     glEnd();
 
     // Draw Intensity curve
-    double dh = m_galaxy.GetFarFieldRad()/100.0;
+    float dh = m_galaxy.GetFarFieldRad()/100.0;
     glBegin(GL_LINE_STRIP);
     glColor3f(0.8, 0.5, 0.7);
     for (int i=0; i<100; ++i)
     {
-      double r = i*dh / m_galaxy.GetCoreRad();
+      float r = i*dh / m_galaxy.GetCoreRad();
       glVertex3f(i*dh, m_galaxy.GetCoreRad() * Intensity(r,
                                                           1,   // Kernradius (in
     Kernradien...) 1.0, // Maximalintensität 1.0, // Skalenlänge, in Kernradien
@@ -235,11 +235,11 @@ void NBodyWnd::DrawVelocity() {
 }
 
 //------------------------------------------------------------------------------
-void NBodyWnd::DrawDensityWaves(int num, double rad) {
-  double dr = rad / num;
+void NBodyWnd::DrawDensityWaves(int num, float rad) {
+  float dr = rad / num;
 
   for (int i = 0; i <= num; ++i) {
-    double r = (i + 1) * dr;
+    float r = (i + 1) * dr;
     glColor3f(1, 1, 1);
     DrawEllipsis(r, r * m_galaxy.GetExcentricity(r),
                  constants::RAD_TO_DEG * m_galaxy.GetAngularOffset(r));
@@ -271,6 +271,7 @@ void NBodyWnd::DrawStars() {
     glColor3f(1, 1, 1);
 
   // Render all Stars from the stars array
+  #pragma omp parallel for
   for (int i = 1; i < num; ++i) {
     const Vec2D &pos = pStars[i].m_pos;
     const Color &col = ColorFromTemperature(pStars[i].m_temp);
@@ -286,6 +287,7 @@ void NBodyWnd::DrawStars() {
   glPointSize(6); // 4
   glBegin(GL_POINTS);
 
+  #pragma omp parallel for
   for (int i = 1; i < num / 30; ++i) {
     const Vec2D &pos = pStars[i].m_pos;
     const Color &col = ColorFromTemperature(pStars[i].m_temp);
@@ -364,10 +366,10 @@ void NBodyWnd::DrawH2() {
     const Vec2D &p1 = pH2[k1].m_pos;
     const Vec2D &p2 = pH2[k2].m_pos;
 
-    double dst =
+    float dst =
         sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
     //    printf("dst: %2.1f; %2.1f\r\n", dst, 100-dst);
-    double size = ((1000 - dst) / 10) - 50;
+    float size = ((1000 - dst) / 10) - 50;
     if (size < 1)
       continue;
 
@@ -393,7 +395,7 @@ void NBodyWnd::DrawH2() {
 
 //------------------------------------------------------------------------------
 void NBodyWnd::DrawStat() {
-  double x0 = 10, y0 = 20, dy = 20;
+  float x0 = 10, y0 = 20, dy = 20;
   int line = 0;
 
   glColor3f(1, 1, 1);
@@ -417,7 +419,7 @@ void NBodyWnd::DrawStat() {
 
 //------------------------------------------------------------------------------
 void NBodyWnd::DrawGalaxyRadii() {
-  double r;
+  float r;
 
   glColor3f(1, 1, 0);
   r = m_galaxy.GetCoreRad();
@@ -442,7 +444,7 @@ void NBodyWnd::DrawGalaxyRadii() {
 
 //------------------------------------------------------------------------------
 void NBodyWnd::DrawHelp() {
-  double x0 = 10, y0 = 20, dy = 20;
+  float x0 = 10, y0 = 20, dy = 20;
   int line = 0;
   Vec3D p;
 
@@ -492,7 +494,7 @@ void NBodyWnd::DrawHelp() {
 }
 
 //------------------------------------------------------------------------------
-NBodyWnd::Color NBodyWnd::ColorFromTemperature(double temp) const {
+NBodyWnd::Color NBodyWnd::ColorFromTemperature(float temp) const {
   int idx = (temp - m_t0) / (m_t1 - m_t0) * m_colNum;
   idx = std::min(m_colNum - 1, idx);
   idx = std::max(0, idx);
@@ -516,11 +518,11 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
       break;
 
     case SDLK_PAGEDOWN:
-      m_galaxy.SetPertAmp(m_galaxy.GetPertAmp() - 10);
+      m_galaxy.SetPertAmp(m_galaxy.GetPertAmp() - 10.0f);
       break;
 
     case SDLK_PAGEUP:
-      m_galaxy.SetPertAmp(m_galaxy.GetPertAmp() + 10);
+      m_galaxy.SetPertAmp(m_galaxy.GetPertAmp() + 10.0f);
       break;
 
     case SDLK_1:
@@ -536,32 +538,32 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
       break;
 
     case SDLK_q:
-      m_galaxy.SetExInner(m_galaxy.GetExInner() + 0.05);
+      m_galaxy.SetExInner(m_galaxy.GetExInner() + 0.05f);
       break;
 
     case SDLK_a:
-      m_galaxy.SetExInner(std::max(m_galaxy.GetExInner() - 0.05, 0.0));
+      m_galaxy.SetExInner(std::max(m_galaxy.GetExInner() - 0.05f, 0.0f));
       break;
 
     case SDLK_w:
-      m_galaxy.SetExOuter(m_galaxy.GetExOuter() + 0.05);
+      m_galaxy.SetExOuter(m_galaxy.GetExOuter() + 0.05f);
       break;
 
     case SDLK_s:
-      m_galaxy.SetExOuter(std::max(m_galaxy.GetExOuter() - 0.05, 0.0));
+      m_galaxy.SetExOuter(std::max(m_galaxy.GetExOuter() - 0.05f, 0.0f));
       break;
 
     case SDLK_e:
-      m_galaxy.SetAngularOffset(m_galaxy.GetAngularOffset() + 0.00005);
+      m_galaxy.SetAngularOffset(m_galaxy.GetAngularOffset() + 0.00005f);
       break;
 
     case SDLK_d:
-      m_galaxy.SetAngularOffset(m_galaxy.GetAngularOffset() - 0.00005);
+      m_galaxy.SetAngularOffset(m_galaxy.GetAngularOffset() - 0.00005f);
       break;
 
     case SDLK_r:
-      if (m_galaxy.GetRad() > m_galaxy.GetCoreRad() + 500) {
-        m_galaxy.SetCoreRad(m_galaxy.GetCoreRad() + 500);
+      if (m_galaxy.GetRad() > m_galaxy.GetCoreRad() + 500.f) {
+        m_galaxy.SetCoreRad(m_galaxy.GetCoreRad() + 500.f);
       }
       std::cout << "Bulge radius " << m_galaxy.GetCoreRad() << "\n";
       break;
@@ -571,7 +573,7 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
       break;
 
     case SDLK_f:
-      m_galaxy.SetCoreRad(std::max(m_galaxy.GetCoreRad() - 500, 0.0));
+      m_galaxy.SetCoreRad(std::max(m_galaxy.GetCoreRad() - 500.f, 0.0f));
       std::cout << "Bulge radius " << m_galaxy.GetCoreRad() << "\n";
       break;
 
@@ -580,7 +582,7 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
       break;
 
     case SDLK_g:
-      m_galaxy.SetRad(std::max(m_galaxy.GetRad() - 1000, 0.0));
+      m_galaxy.SetRad(std::max(m_galaxy.GetRad() - 1000.f, 0.0f));
       break;
 
     case SDLK_b:
@@ -598,6 +600,24 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
     case SDLK_h:
       m_galaxy.SetSigma(std::max(m_galaxy.GetSigma() - 0.05, 0.05));
       break;
+
+    case SDLK_i: {
+      constexpr int32_t kStepSize = 10000;
+      const int32_t current_num_stars = m_galaxy.GetNumStars();
+      const int32_t future_num_stars = current_num_stars + kStepSize;
+      std::cout << "Increasing num stars from " << current_num_stars << " to " << future_num_stars << "\n"; 
+      m_galaxy.SetNumStars(std::min(future_num_stars, std::numeric_limits<int32_t>::max()));
+      break;
+    }
+
+    case SDLK_o: {
+      constexpr int32_t kStepSize = 10000;
+      const int32_t current_num_stars = m_galaxy.GetNumStars();
+      const int32_t future_num_stars = current_num_stars - kStepSize;
+      std::cout << "Decreasing num stars from " << current_num_stars << " to " << future_num_stars << "\n"; 
+      m_galaxy.SetNumStars(std::max(future_num_stars, 1000));
+      break;
+    }
 
     case SDLK_F1:
       std::cout << "Display:  help screen"

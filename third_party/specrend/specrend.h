@@ -6,7 +6,7 @@
    the white point. */
 struct colourSystem {
   const char *name;   /* Colour system name */
-  double xRed, yRed,  /* Red x, y */
+  float xRed, yRed,  /* Red x, y */
       xGreen, yGreen, /* Green x, y */
       xBlue, yBlue,   /* Blue x, y */
       xWhite, yWhite, /* White point x, y */
@@ -18,14 +18,14 @@ extern colourSystem EBUsystem;
 extern colourSystem SMPTEsystem;
 extern colourSystem CIEsystem;
 extern colourSystem Rec709system;
-extern double bbTemp; /* Hidden temperature argument */
+extern float bbTemp; /* Hidden temperature argument */
 
-void spectrum_to_xyz(double (*spec_intens)(double wavelength), double *x,
-                     double *y, double *z);
-extern void xyz_to_rgb(struct colourSystem *cs, double xc, double yc, double zc,
-                       double *r, double *g, double *b);
-extern double bb_spectrum(double wavelength);
-extern void norm_rgb(double *r, double *g, double *b);
-extern double bb_spectrum(double wavelength);
+void spectrum_to_xyz(float (*spec_intens)(float wavelength), float *x,
+                     float *y, float *z);
+extern void xyz_to_rgb(struct colourSystem *cs, float xc, float yc, float zc,
+                       float *r, float *g, float *b);
+extern float bb_spectrum(float wavelength);
+extern void norm_rgb(float *r, float *g, float *b);
+extern float bb_spectrum(float wavelength);
 
 #endif

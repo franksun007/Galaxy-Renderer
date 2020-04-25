@@ -38,9 +38,9 @@ private:
   };
 
   struct Color {
-    double r;
-    double g;
-    double b;
+    float r;
+    float g;
+    float b;
   };
 
   NBodyWnd(const NBodyWnd &orig);
@@ -52,14 +52,14 @@ private:
   void DrawHelp();
   void DrawGalaxyRadii();
   void DrawCenterOfMass();
-  void DrawDensityWaves(int num, double rad);
+  void DrawDensityWaves(int num, float rad);
   void DrawVelocity();
-  void DrawEllipsis(double a, double b, double angle);
-  Color ColorFromTemperature(double temp) const;
+  void DrawEllipsis(float a, float b, float angle);
+  Color ColorFromTemperature(float temp) const;
 
   int m_camOrient; ///< Index of the camera orientation to use
   int m_starRenderType;
-  double m_roi;     ///< Radius of the region of interest
+  float m_roi;     ///< Radius of the region of interest
   uint32_t m_flags; ///< The display flags
   bool m_bDumpImage;
 
@@ -67,7 +67,7 @@ private:
 
   // Star color management
   int m_colNum;
-  double m_t0, m_t1, m_dt;
+  float m_t0, m_t1, m_dt;
   Color m_col[200];
 };
 

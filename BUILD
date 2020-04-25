@@ -13,6 +13,8 @@ cc_library(
     name = "Galaxy",
     srcs = ["Galaxy.cpp"],
     hdrs = ["Galaxy.h"],
+    copts = ["-fopenmp"],
+    linkopts = ["-fopenmp"],
     deps = [
         ":Constants",
         ":CumulativeDistributionFunction",

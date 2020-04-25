@@ -6,43 +6,43 @@
 
 class CumulativeDistributionFunction {
 public:
-  typedef double (CumulativeDistributionFunction::*dist_fun_t)(double x);
+  typedef float (CumulativeDistributionFunction::*dist_fun_t)(float x);
 
   CumulativeDistributionFunction();
   virtual ~CumulativeDistributionFunction();
 
-  double ProbFromVal(double fVal);
-  double ValFromProb(double fVal);
+  float ProbFromVal(float fVal);
+  float ValFromProb(float fVal);
 
-  void SetupRealistic(double I0, double k, double a, double RBulge, double min,
-                      double max, int nSteps);
+  void SetupRealistic(float I0, float k, float a, float RBulge, float min,
+                      float max, int nSteps);
 
 private:
   dist_fun_t m_pDistFun;
-  double m_fMin;
-  double m_fMax;
-  double m_fWidth;
+  float m_fMin;
+  float m_fMax;
+  float m_fWidth;
   int m_nSteps;
 
   // parameters for realistic star distribution
-  double m_I0;
-  double m_k;
-  double m_a;
-  double m_RBulge;
+  float m_I0;
+  float m_k;
+  float m_a;
+  float m_RBulge;
 
-  std::vector<double> m_vM1;
-  std::vector<double> m_vY1;
-  std::vector<double> m_vX1;
+  std::vector<float> m_vM1;
+  std::vector<float> m_vY1;
+  std::vector<float> m_vX1;
 
-  std::vector<double> m_vM2;
-  std::vector<double> m_vY2;
-  std::vector<double> m_vX2;
+  std::vector<float> m_vM2;
+  std::vector<float> m_vY2;
+  std::vector<float> m_vX2;
 
   void BuildCDF(int nSteps);
 
-  double IntensityBulge(double R, double I0, double k);
-  double IntensityDisc(double R, double I0, double a);
-  double Intensity(double x);
+  float IntensityBulge(float R, float I0, float k);
+  float IntensityDisc(float R, float I0, float a);
+  float Intensity(float x);
 };
 
 #endif // __GALAXY_RENDERER_CUMULATIVE_DISTRIBUTION_FUNCTION_H__

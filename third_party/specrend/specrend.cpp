@@ -78,7 +78,7 @@ colourSystem Rec709system = {"CIE REC 709", 0.64,          0.33,
 
 */
 
-void upvp_to_xy(double up, double vp, double *xc, double *yc) {
+void upvp_to_xy(float up, float vp, float *xc, float *yc) {
   *xc = (9 * up) / ((6 * up) - (16 * vp) + 12);
   *yc = (4 * vp) / ((6 * up) - (16 * vp) + 12);
 }
@@ -89,7 +89,7 @@ void upvp_to_xy(double up, double vp, double *xc, double *yc) {
 
 */
 
-void xy_to_upvp(double xc, double yc, double *up, double *vp) {
+void xy_to_upvp(float xc, float yc, float *up, float *vp) {
   *up = (4 * xc) / ((-2 * xc) + (12 * yc) + 3);
   *vp = (9 * yc) / ((-2 * xc) + (12 * yc) + 3);
 }
@@ -112,12 +112,12 @@ void xy_to_upvp(double xc, double yc, double *up, double *vp) {
 
 */
 
-void xyz_to_rgb(struct colourSystem *cs, double xc, double yc, double zc,
-                double *r, double *g, double *b) {
-  double xr, yr, zr, xg, yg, zg, xb, yb, zb;
-  double xw, yw, zw;
-  double rx, ry, rz, gx, gy, gz, bx, by, bz;
-  double rw, gw, bw;
+void xyz_to_rgb(struct colourSystem *cs, float xc, float yc, float zc,
+                float *r, float *g, float *b) {
+  float xr, yr, zr, xg, yg, zg, xb, yb, zb;
+  float xw, yw, zw;
+  float rx, ry, rz, gx, gy, gz, bx, by, bz;
+  float rw, gw, bw;
 
   xr = cs->xRed;
   yr = cs->yRed;
@@ -178,7 +178,7 @@ void xyz_to_rgb(struct colourSystem *cs, double xc, double yc, double zc,
      system.  This amounts simply to testing whether all the
      primary weights are non-negative. */
 
-int inside_gamut(double r, double g, double b) {
+int inside_gamut(float r, float g, float b) {
   return (r >= 0) && (g >= 0) && (b >= 0);
 }
 
@@ -193,8 +193,8 @@ int inside_gamut(double r, double g, double b) {
 
 */
 
-int constrain_rgb(double *r, double *g, double *b) {
-  double w;
+int constrain_rgb(float *r, float *g, float *b) {
+  float w;
 
   /* Amount of white needed is w = - min(0, *r, *g, *b) */
 
@@ -227,14 +227,14 @@ int constrain_rgb(double *r, double *g, double *b) {
        http://www.poynton.com/GammaFAQ.html
 */
 
-void gamma_correct(const struct colourSystem *cs, double *c) {
-  double gamma;
+void gamma_correct(const struct colourSystem *cs, float *c) {
+  float gamma;
 
   gamma = cs->gamma;
 
   if (gamma == GAMMA_REC709) {
     /* Rec. 709 gamma correction. */
-    double cc = 0.018;
+    float cc = 0.018;
 
     if (*c < cc) {
       *c *= ((1.099 * pow(cc, 0.45)) - 0.099) / cc;
@@ -247,8 +247,8 @@ void gamma_correct(const struct colourSystem *cs, double *c) {
   }
 }
 
-void gamma_correct_rgb(const struct colourSystem *cs, double *r, double *g,
-                       double *b) {
+void gamma_correct_rgb(const struct colourSystem *cs, float *r, float *g,
+                       float *b) {
   gamma_correct(cs, r);
   gamma_correct(cs, g);
   gamma_correct(cs, b);
@@ -261,9 +261,9 @@ void gamma_correct_rgb(const struct colourSystem *cs, double *r, double *g,
 
 */
 
-void norm_rgb(double *r, double *g, double *b) {
+void norm_rgb(float *r, float *g, float *b) {
 #define Max(a, b) (((a) > (b)) ? (a) : (b))
-  double greatest = Max(*r, Max(*g, *b));
+  float greatest = Max(*r, Max(*g, *b));
 
   if (greatest > 0) {
     *r /= greatest;
@@ -287,10 +287,10 @@ void norm_rgb(double *r, double *g, double *b) {
             x + y + z = 1.
 */
 
-void spectrum_to_xyz(double (*spec_intens)(double wavelength), double *x,
-                     double *y, double *z) {
+void spectrum_to_xyz(float (*spec_intens)(float wavelength), float *x,
+                     float *y, float *z) {
   int i;
-  double lambda, X = 0, Y = 0, Z = 0, XYZ;
+  float lambda, X = 0, Y = 0, Z = 0, XYZ;
 
   /* CIE colour matching functions xBar, yBar, and zBar for
      wavelengths from 380 through 780 nanometers, every 5
@@ -301,13 +301,13 @@ void spectrum_to_xyz(double (*spec_intens)(double wavelength), double *x,
           cie_colour_match[(lambda - 380) / 5][2] = zBar
 
       To save memory, this table can be declared as floats
-      rather than doubles; (IEEE) float has enough
+      rather than floats; (IEEE) float has enough
       significant bits to represent the values. It's declared
-      as a double here to avoid warnings about "conversion
+      as a float here to avoid warnings about "conversion
       between floating-point types" from certain persnickety
       compilers. */
 
-  static double cie_colour_match[81][3] = {
+  static float cie_colour_match[81][3] = {
       {0.0014, 0.0000, 0.0065}, {0.0022, 0.0001, 0.0105},
       {0.0042, 0.0001, 0.0201}, {0.0076, 0.0002, 0.0362},
       {0.0143, 0.0004, 0.0679}, {0.0232, 0.0006, 0.1102},
@@ -351,7 +351,7 @@ void spectrum_to_xyz(double (*spec_intens)(double wavelength), double *x,
       {0.0000, 0.0000, 0.0000}};
 
   for (i = 0, lambda = 380; lambda < 780.1; i++, lambda += 5) {
-    double Me;
+    float Me;
 
     Me = (*spec_intens)(lambda);
     X += Me * cie_colour_match[i][0];
@@ -369,10 +369,10 @@ void spectrum_to_xyz(double (*spec_intens)(double wavelength), double *x,
     Calculate, by Planck's radiation law, the emittance of a black body
     of temperature bbTemp at the given wavelength (in metres).  */
 
-double bbTemp = 5000; /* Hidden temperature argument
+float bbTemp = 5000; /* Hidden temperature argument
                          to BB_SPECTRUM. */
-double bb_spectrum(double wavelength) {
-  double wlm = wavelength * 1e-9; /* Wavelength in meters */
+float bb_spectrum(float wavelength) {
+  float wlm = wavelength * 1e-9; /* Wavelength in meters */
 
   return (3.74183e-16 * pow(wlm, -5.0)) /
          (exp(1.4388e-2 / (wlm * bbTemp)) - 1.0);
@@ -407,7 +407,7 @@ double bb_spectrum(double wavelength) {
 /*
 int main()
 {
-    double t, x, y, z, r, g, b;
+    float t, x, y, z, r, g, b;
     struct colourSystem *cs = &SMPTEsystem;
 
     printf("Temperature       x      y      z       R     G     B\n");

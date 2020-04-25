@@ -6,16 +6,16 @@
 
 using namespace std;
 
-Vec2D OrbitCalculator::Compute(double angle, double a, double b, double theta,
-                               const Vec2D &p, int pertN, double pertAmp) {
-  const double beta = -angle;
-  const double alpha = theta * constants::DEG_TO_RAD;
+Vec2D OrbitCalculator::Compute(float angle, float a, float b, float theta,
+                               const Vec2D &p, int pertN, float pertAmp) {
+  const float beta = -angle;
+  const float alpha = theta * constants::DEG_TO_RAD;
 
   // temporaries to save cpu time
-  const double cosalpha = cos(alpha);
-  const double sinalpha = sin(alpha);
-  const double cosbeta = cos(beta);
-  const double sinbeta = sin(beta);
+  const float cosalpha = cos(alpha);
+  const float sinalpha = sin(alpha);
+  const float cosbeta = cos(beta);
+  const float sinbeta = sin(beta);
 
   Vec2D pos = Vec2D(p.x + (a * cosalpha * cosbeta - b * sinalpha * sinbeta),
                     p.y + (a * cosalpha * sinbeta + b * sinalpha * cosbeta));
