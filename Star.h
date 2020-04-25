@@ -1,20 +1,18 @@
 #ifndef __GALAXY_RENDERER_STAR_H__
 #define __GALAXY_RENDERER_STAR_H__
 
+#include "OrbitCalculator.h"
 #include "Vector.h"
 
-/*
-class OrbitCalculator
-{
-    static Vec2D Compute(double angle, double a, double b, double theta, const
-Vec2D &center, double pertN, double pertAmp);
-};
-*/
-//------------------------------------------------------------------------
 class Star {
 public:
-  Star();
-  const Vec2D &CalcXY(int pertN, double pertAmp);
+  Star() : m_theta(0), m_a(0), m_b(0), m_center(0, 0) {}
+
+  const Vec2D &CalcXY(int pertN, double pertAmp) {
+    m_pos = OrbitCalculator::Compute(m_angle, m_a, m_b, m_theta, m_center,
+                                     pertN, pertAmp);
+    return m_pos;
+  }
 
   double m_theta;    // position auf der ellipse
   double m_velTheta; // angular velocity
@@ -28,4 +26,4 @@ public:
   Vec2D m_pos;       // current position in kartesion koordinates
 };
 
-#endif  // __GALAXY_RENDERER_STAR_H__
+#endif // __GALAXY_RENDERER_STAR_H__

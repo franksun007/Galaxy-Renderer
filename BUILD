@@ -68,7 +68,6 @@ cc_library(
 
 cc_library(
     name = "Star",
-    srcs = ["Star.cpp"],
     hdrs = ["Star.h"],
     deps = [
         ":Constants",

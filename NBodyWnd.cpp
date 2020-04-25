@@ -24,7 +24,8 @@
 
 //------------------------------------------------------------------------------
 NBodyWnd::NBodyWnd(const int sz_w, const int sz_h, const std::string caption)
-    : SDLWindow(sz_w, sz_h, 35000.0, caption), m_camOrient(0), m_starRenderType(1),
+    : SDLWindow(sz_w, sz_h, 35000.0, caption), m_camOrient(0),
+      m_starRenderType(1),
       m_flags(dspSTARS | dspAXIS | dspHELP | dspDUST | dspH2),
       m_bDumpImage(false), m_galaxy(), m_colNum(200), m_t0(1000), m_t1(10000),
       m_dt((m_t1 - m_t0) / m_colNum) {
@@ -161,7 +162,7 @@ void NBodyWnd::DrawEllipsis(double a, double b, double angle) {
   // Angle is given by Degree Value
   double beta =
       -angle *
-      Constant::DEG_TO_RAD; //(Math.PI/180) converts Degree Value into Radians
+      constants::DEG_TO_RAD; //(Math.PI/180) converts Degree Value into Radians
   double sinbeta = sin(beta);
   double cosbeta = cos(beta);
 
@@ -170,7 +171,7 @@ void NBodyWnd::DrawEllipsis(double a, double b, double angle) {
   Vec2D pos;
   Vec2D vecNull;
   for (int i = 0; i < 361; i += 360 / steps) {
-    double alpha = i * Constant::DEG_TO_RAD;
+    double alpha = i * constants::DEG_TO_RAD;
     double sinalpha = sin(alpha);
     double cosalpha = cos(alpha);
 
@@ -189,7 +190,7 @@ void NBodyWnd::DrawEllipsis(double a, double b, double angle) {
 void NBodyWnd::DrawVelocity() {
   Star *pStars = m_galaxy.GetStars();
 
-  double dt_in_sec = m_galaxy.GetTimeStep() * Constant::SEC_PER_YEAR;
+  double dt_in_sec = m_galaxy.GetTimeStep() * constants::SEC_PER_YEAR;
   glPointSize(1);
   glColor3f(0.5, 0.7, 0.5);
   glBegin(GL_POINTS);
@@ -200,7 +201,7 @@ void NBodyWnd::DrawVelocity() {
     // umrechnen in km/s
     double v = sqrt(vel.x * vel.x + vel.y * vel.y); // pc / timestep
     v /= dt_in_sec;                                 // v in pc/sec
-    v *= Constant::PC_TO_KM;                        // v in km/s
+    v *= constants::PC_TO_KM;                       // v in km/s
 
     glVertex3f(r, v * 10, 0.0f);
   }
@@ -241,7 +242,7 @@ void NBodyWnd::DrawDensityWaves(int num, double rad) {
     double r = (i + 1) * dr;
     glColor3f(1, 1, 1);
     DrawEllipsis(r, r * m_galaxy.GetExcentricity(r),
-                 Constant::RAD_TO_DEG * m_galaxy.GetAngularOffset(r));
+                 constants::RAD_TO_DEG * m_galaxy.GetAngularOffset(r));
   }
 }
 

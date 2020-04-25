@@ -108,4 +108,4 @@ private:
   void InitPointSpriteExtension();
 };
 
-#endif  // __GALAXY_RENDERER_SDL_WINDOW_H__
+#endif // __GALAXY_RENDERER_SDL_WINDOW_H__

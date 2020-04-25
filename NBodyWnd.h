@@ -71,4 +71,4 @@ private:
   Color m_col[200];
 };
 
-#endif // __GALAXY_RENDERER_NBODYWND_H__ 
+#endif // __GALAXY_RENDERER_NBODYWND_H__

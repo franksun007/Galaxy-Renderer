@@ -192,7 +192,8 @@ void SDLWindow::InitPointSpriteExtension() {
   // http://gpwiki.org/index.php/SDL:Tutorials:Using_SDL_with_OpenGL
   tex = SDL_LoadBMP("textures/particle.bmp");
   if (!tex)
-    throw std::runtime_error("can't load star texture (textures/particle.bmp).");
+    throw std::runtime_error(
+        "can't load star texture (textures/particle.bmp).");
 
   // Check that the image's width is a power of 2
   if (tex->w & (tex->w - 1))

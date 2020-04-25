@@ -21,11 +21,10 @@ Galaxy::Galaxy(double rad, double radCore, double deltaAng, double ex1,
     : m_elEx1(ex1), m_elEx2(ex2), m_velOrigin(30), m_velInner(velInner),
       m_velOuter(velOuter), m_angleOffset(deltaAng), m_radCore(radCore),
       m_radGalaxy(rad), m_sigma(0.45), m_velAngle(0.000001),
-      m_numStars(numStars), m_numDust(numStars), m_numH2(300), m_pertN(0),
-      m_pertAmp(0), m_time(0), m_timeStep(0), m_bHasDarkMatter(true),
-      m_pos(0, 0), m_pStars(nullptr), m_pDust(nullptr), m_pH2(nullptr),
-      m_dustRenderSize(70) {
-}
+      m_dustRenderSize(70), m_numStars(numStars), m_numDust(numStars),
+      m_numH2(300), m_pertN(0), m_pertAmp(0), m_time(0), m_timeStep(0),
+      m_bHasDarkMatter(true), m_pos(0, 0), m_pStars(nullptr), m_pDust(nullptr),
+      m_pH2(nullptr) {}
 
 //------------------------------------------------------------------------
 Galaxy::~Galaxy() {
@@ -304,8 +303,8 @@ double Galaxy::GetOrbitalVelocity(double rad) const {
   }
 
   // Calculate velocity in degree per year
-  double u = 2 * M_PI * rad * Constant::PC_TO_KM;       // Umfang in km
-  double time = u / (vel_kms * Constant::SEC_PER_YEAR); // Umlaufzeit in Jahren
+  double u = 2 * M_PI * rad * constants::PC_TO_KM;       // Umfang in km
+  double time = u / (vel_kms * constants::SEC_PER_YEAR); // Umlaufzeit in Jahren
 
   return 360.0 / time; // Grad pro Jahr
 }
@@ -434,7 +433,7 @@ Vec2D Galaxy::GetStarPos(int idx)
 
 //  double beta  = m_angle - m_pStars[idx].m_angle,
   double beta  = -m_pStars[idx].m_angle,
-         alpha = theta * Constant::DEG_TO_RAD;
+         alpha = theta * constants::DEG_TO_RAD;
 
   // temporyries to save cpu time
   double cosalpha = cos(alpha),
