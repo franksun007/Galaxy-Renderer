@@ -27,7 +27,7 @@ public:
   float m_radCore;     // Radius of the inner core
   float m_radGalaxy;   // Radius of the galaxy
   float m_radFarField; // The radius after which all density waves must have
-                        // circular shape
+                       // circular shape
 };
 
 #endif // __GALAXY_RENDERER_GALAXY_PROP_H__

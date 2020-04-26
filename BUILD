@@ -85,9 +85,8 @@ cc_library(
 cc_binary(
     name = "Galaxy-Renderer",
     srcs = ["main.cpp"],
-    data = ["//textures:textures"],
+    data = ["//textures"],
     deps = [
         ":NBodyWnd",
     ],
 )
-

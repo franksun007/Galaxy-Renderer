@@ -110,9 +110,10 @@ void SDLWindow::TextOut(int x, int y, const char *fmt, ...) {
 //------------------------------------------------------------------------------
 /** \brief get opengl position from a screen position
 
-   see also:  http://nehe.gamedev.net/data/articles/article.asp?article=13
+   see also:  http://nehe.gamedev.net/article/using_gluunproject/16013/
 */
 Vec3D SDLWindow::GetOGLPos(int x, int y) {
+  // TODO(Frank): Make this floating point
   GLint viewport[4];
   GLdouble modelview[16];
   GLdouble projection[16];

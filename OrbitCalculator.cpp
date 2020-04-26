@@ -11,7 +11,6 @@ Vec2D OrbitCalculator::Compute(float angle, float a, float b, float theta,
   const float beta = -angle;
   const float alpha = theta * constants::DEG_TO_RAD;
 
-  // temporaries to save cpu time
   const float cosalpha = cos(alpha);
   const float sinalpha = sin(alpha);
   const float cosbeta = cos(beta);

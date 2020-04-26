@@ -22,13 +22,28 @@
 #pragma warning(disable : 4244)
 #endif
 
-//------------------------------------------------------------------------------
+namespace {
+
+double IntensityDisk(double r, double i0, double a) { return i0 * exp(-r / a); }
+
+double IntensityBulge(double r, double i0, double k) {
+  return i0 * exp(-k * pow(r, 0.25));
+}
+
+double Intensity(double r, double r_bulge, double i0, double a, double k) {
+  return (r < r_bulge)
+             ? IntensityBulge(r, i0, k)
+             : IntensityDisk(r - r_bulge, IntensityBulge(r_bulge, i0, k), a);
+}
+
+} // namespace
+
 NBodyWnd::NBodyWnd(const int sz_w, const int sz_h, const std::string caption)
     : SDLWindow(sz_w, sz_h, 35000.0, caption), m_camOrient(0),
       m_starRenderType(1),
       m_flags(dspSTARS | dspAXIS | dspHELP | dspDUST | dspH2),
-      m_bDumpImage(false), m_galaxy(), m_colNum(200), m_t0(1000), m_t1(10000),
-      m_dt((m_t1 - m_t0) / m_colNum) {
+      m_bDumpImage(false), m_galaxy(), m_galaxy_2(), m_colNum(200), m_t0(1000),
+      m_t1(10000), m_dt((m_t1 - m_t0) / m_colNum) {
   float x, y, z;
   for (int i = 0; i < m_colNum; ++i) {
     Color &col = m_col[i];
@@ -52,15 +67,32 @@ void NBodyWnd::Init(int num) {
       0.85,   // excentricity at the edge of the core
       0.95,   // excentricity at the edge of the disk
       0.5,
-      200,   // orbital velocity at the edge of the core
-      300,   // orbital velovity at the edge of the disk
-      30000, // total number of stars
-      true,  // has dark matter
-      2,     // Perturbations per full ellipse
-      40,    // Amplitude damping factor of perturbation
-      100);  // dust render size in pixel
+      200,                 // orbital velocity at the edge of the core
+      300,                 // orbital velovity at the edge of the disk
+      30000,               // total number of stars
+      true,                // has dark matter
+      2,                   // Perturbations per full ellipse
+      40,                  // Amplitude damping factor of perturbation
+      100,                 // dust render size in pixel
+      Vec2D(-1000, 1000)); // Center of the galaxy
 
-  m_roi = m_galaxy.GetFarFieldRad() * 1.3;
+  m_galaxy_2.Reset(
+      13000 / 2,  // radius of the galaxy
+      4000 / 1.5, // radius of the core
+      0.0004,     // angluar offset of the density wave per parsec of radius
+      0.85,       // excentricity at the edge of the core
+      0.95,       // excentricity at the edge of the disk
+      0.5,
+      20,                    // orbital velocity at the edge of the core
+      30,                    // orbital velovity at the edge of the disk
+      30000 / 20,            // total number of stars
+      true,                  // has dark matter
+      2,                     // Perturbations per full ellipse
+      40 / 1.2,              // Amplitude damping factor of perturbation
+      100 / 1.5,             // dust render size in pixel
+      Vec2D(10000, -10000)); // Center of the galaxy
+
+  m_roi = (m_galaxy.GetFarFieldRad() + m_galaxy_2.GetFarFieldRad()) / 2 * 1.3;
 
   // OpenGL initialization
   glEnable(GL_LINE_SMOOTH);
@@ -121,7 +153,8 @@ void NBodyWnd::Render() {
   SetCamera(pos, lookAt, orient);
 
   if (!(m_flags & dspPAUSE)) {
-    m_galaxy.SingleTimeStep(100000); // time in years
+    m_galaxy.SingleTimeStep(1000000, m_galaxy_2); // time in years
+    m_galaxy_2.SingleTimeStep(1000000, m_galaxy);
   }
 
   if (m_flags & dspAXIS)
@@ -200,38 +233,44 @@ void NBodyWnd::DrawVelocity() {
 
     // umrechnen in km/s
     float v = sqrt(vel.x * vel.x + vel.y * vel.y); // pc / timestep
-    v /= dt_in_sec;                                 // v in pc/sec
-    v *= constants::PC_TO_KM;                       // v in km/s
+    v /= dt_in_sec;                                // v in pc/sec
+    v *= constants::PC_TO_KM;                      // v in km/s
 
     glVertex3f(r, v * 10, 0.0f);
   }
   glEnd();
-  /*
+
+  {
     // Draw Mass Distribution
     glBegin(GL_LINE_STRIP);
     glColor3f(0.5, 0.5, 0.7);
-    float dh = m_galaxy.GetFarFieldRad()/100.0;
-    for (int i=0; i<100; ++i)
-    {
-      glVertex3f(i*dh, m_galaxy.m_numberByRad[i], 0.0f);
+    float dh = m_galaxy.GetFarFieldRad() / 100.0;
+    for (int i = 0; i < 100; ++i) {
+      glVertex3f(i * dh, m_galaxy.m_numberByRad[i], 0.0f);
     }
     glEnd();
+  }
 
+  {
     // Draw Intensity curve
-    float dh = m_galaxy.GetFarFieldRad()/100.0;
+    float dh = m_galaxy.GetFarFieldRad() / 100.0;
     glBegin(GL_LINE_STRIP);
     glColor3f(0.8, 0.5, 0.7);
-    for (int i=0; i<100; ++i)
-    {
-      float r = i*dh / m_galaxy.GetCoreRad();
-      glVertex3f(i*dh, m_galaxy.GetCoreRad() * Intensity(r,
-                                                          1,   // Kernradius (in
-    Kernradien...) 1.0, // Maximalintensität 1.0, // Skalenlänge, in Kernradien
-    innerhalb der die Hälfte der Scheibenleuchtkraft angesiedelt ist 1.0),//
-    Faktor for Kernleuchtkraft 0.0f);
+    for (int i = 0; i < 100; ++i) {
+      float r = i * dh / m_galaxy.GetCoreRad();
+      glVertex3f(
+          i * dh,
+          m_galaxy.GetCoreRad() *
+              Intensity(r,
+                        1,    // Kernradius (inKernradien...)
+                        1.0,  // Maximalintensität
+                        1.0,  // Skalenlänge, in Kernradieninnerhalb der die
+                              // Hälfte der Scheibenleuchtkraft angesiedelt ist
+                        1.0), // Faktor for Kernleuchtkraft
+          0.0f);
     }
     glEnd();
-  */
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -261,43 +300,46 @@ void NBodyWnd::DrawStars() {
   glEnable(GL_BLEND);      // soft blending of point sprites
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-  int num = m_galaxy.GetNumStars();
-  Star *pStars = m_galaxy.GetStars();
+  auto render_star_func = [this](Galaxy &galaxy) {
+    int num = galaxy.GetNumStars();
+    Star *pStars = galaxy.GetStars();
 
-  glPointSize(3); // 4
-  glBegin(GL_POINTS);
+    glPointSize(3); // 4
+    glBegin(GL_POINTS);
 
-  if (m_starRenderType == 2)
-    glColor3f(1, 1, 1);
+    if (m_starRenderType == 2)
+      glColor3f(1, 1, 1);
 
-  // Render all Stars from the stars array
-  #pragma omp parallel for
-  for (int i = 1; i < num; ++i) {
-    const Vec2D &pos = pStars[i].m_pos;
-    const Color &col = ColorFromTemperature(pStars[i].m_temp);
-    if (m_starRenderType == 1) {
-      glColor3f(col.r * pStars[i].m_mag, col.g * pStars[i].m_mag,
-                col.b * pStars[i].m_mag);
+    // Render all Stars from the stars array
+    for (int i = 1; i < num; ++i) {
+      const Vec2D &pos = pStars[i].m_pos;
+      const Color &col = ColorFromTemperature(pStars[i].m_temp);
+      if (m_starRenderType == 1) {
+        glColor3f(col.r * pStars[i].m_mag, col.g * pStars[i].m_mag,
+                  col.b * pStars[i].m_mag);
+      }
+      glVertex3f(pos.x, pos.y, 0.0f);
     }
-    glVertex3f(pos.x, pos.y, 0.0f);
-  }
-  glEnd();
+    glEnd();
 
-  // Render a portion of the stars as bright distinct stars
-  glPointSize(6); // 4
-  glBegin(GL_POINTS);
+    // Render a portion of the stars as bright distinct stars
+    glPointSize(6); // 4
+    glBegin(GL_POINTS);
 
-  #pragma omp parallel for
-  for (int i = 1; i < num / 30; ++i) {
-    const Vec2D &pos = pStars[i].m_pos;
-    const Color &col = ColorFromTemperature(pStars[i].m_temp);
-    if (m_starRenderType == 1) {
-      glColor3f(0.2 + col.r * pStars[i].m_mag, 0.2 + col.g * pStars[i].m_mag,
-                0.2 + col.b * pStars[i].m_mag);
+    for (int i = 1; i < num / 30; ++i) {
+      const Vec2D &pos = pStars[i].m_pos;
+      const Color &col = ColorFromTemperature(pStars[i].m_temp);
+      if (m_starRenderType == 1) {
+        glColor3f(0.2 + col.r * pStars[i].m_mag, 0.2 + col.g * pStars[i].m_mag,
+                  0.2 + col.b * pStars[i].m_mag);
+      }
+      glVertex3f(pos.x, pos.y, 0.0f);
     }
-    glVertex3f(pos.x, pos.y, 0.0f);
-  }
-  glEnd();
+    glEnd();
+  };
+
+  render_star_func(m_galaxy);
+  render_star_func(m_galaxy_2);
 
   glDisable(GL_POINT_SPRITE_ARB);
   glDisable(GL_BLEND);
@@ -319,22 +361,27 @@ void NBodyWnd::DrawDust() {
   glEnable(GL_BLEND);      // soft blending of point sprites
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-  const Star *pDust = m_galaxy.GetDust();
-  int num = m_galaxy.GetNumDust();
+  auto render_dust_func = [this](Galaxy &galaxy, const float maxSize) {
+    const Star *pDust = galaxy.GetDust();
+    int num = galaxy.GetNumDust();
 
-  // size 70 looks ok when the fov is 28174
-  glPointSize(
-      std::min((float)(m_galaxy.GetDustRenderSize() * 28174 / m_fov), maxSize));
-  glBegin(GL_POINTS);
+    // size 70 looks ok when the fov is 28174
+    glPointSize(
+        std::min((float)(galaxy.GetDustRenderSize() * 28174 / m_fov), maxSize));
+    glBegin(GL_POINTS);
 
-  for (int i = 0; i < num; ++i) {
-    const Vec2D &pos = pDust[i].m_pos;
-    const Color &col = ColorFromTemperature(pDust[i].m_temp);
-    glColor3f(col.r * pDust[i].m_mag, col.g * pDust[i].m_mag,
-              col.b * pDust[i].m_mag);
-    glVertex3f(pos.x, pos.y, 0.0f);
-  }
-  glEnd();
+    for (int i = 0; i < num; ++i) {
+      const Vec2D &pos = pDust[i].m_pos;
+      const Color &col = ColorFromTemperature(pDust[i].m_temp);
+      glColor3f(col.r * pDust[i].m_mag, col.g * pDust[i].m_mag,
+                col.b * pDust[i].m_mag);
+      glVertex3f(pos.x, pos.y, 0.0f);
+    }
+    glEnd();
+  };
+
+  render_dust_func(m_galaxy, maxSize);
+  render_dust_func(m_galaxy_2, maxSize);
 
   glDisable(GL_POINT_SPRITE_ARB);
   glDisable(GL_TEXTURE_2D);
@@ -356,37 +403,42 @@ void NBodyWnd::DrawH2() {
   glEnable(GL_BLEND);      // soft blending of point sprites
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-  Star *pH2 = m_galaxy.GetH2();
-  int num = m_galaxy.GetNumH2();
+  auto render_h2_func = [this](Galaxy &galaxy) {
+    Star *pH2 = galaxy.GetH2();
+    int num = galaxy.GetNumH2();
 
-  for (int i = 0; i < num; ++i) {
-    int k1 = 2 * i;
-    int k2 = 2 * i + 1;
+    for (int i = 0; i < num; ++i) {
+      int k1 = 2 * i;
+      int k2 = 2 * i + 1;
 
-    const Vec2D &p1 = pH2[k1].m_pos;
-    const Vec2D &p2 = pH2[k2].m_pos;
+      const Vec2D &p1 = pH2[k1].m_pos;
+      const Vec2D &p2 = pH2[k2].m_pos;
 
-    float dst =
-        sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
-    //    printf("dst: %2.1f; %2.1f\r\n", dst, 100-dst);
-    float size = ((1000 - dst) / 10) - 50;
-    if (size < 1)
-      continue;
+      float dst =
+          sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+      //    printf("dst: %2.1f; %2.1f\r\n", dst, 100-dst);
+      float size = ((1000 - dst) / 10) - 50;
+      if (size < 1)
+        continue;
 
-    glPointSize(2 * size);
-    glBegin(GL_POINTS);
-    const Color &col = ColorFromTemperature(pH2[k1].m_temp);
-    glColor3f(col.r * pH2[i].m_mag * 2, col.g * pH2[i].m_mag * 0.5,
-              col.b * pH2[i].m_mag * 0.5);
-    glVertex3f(p1.x, p1.y, 0.0f);
-    glEnd();
+      glPointSize(2 * size);
+      glBegin(GL_POINTS);
+      const Color &col = ColorFromTemperature(pH2[k1].m_temp);
+      glColor3f(col.r * pH2[i].m_mag * 2, col.g * pH2[i].m_mag * 0.5,
+                col.b * pH2[i].m_mag * 0.5);
+      glVertex3f(p1.x, p1.y, 0.0f);
+      glEnd();
 
-    glPointSize(size / 6);
-    glBegin(GL_POINTS);
-    glColor3f(1, 1, 1);
-    glVertex3f(p1.x, p1.y, 0.0f);
-    glEnd();
-  }
+      glPointSize(size / 6);
+      glBegin(GL_POINTS);
+      glColor3f(1, 1, 1);
+      glVertex3f(p1.x, p1.y, 0.0f);
+      glEnd();
+    }
+  };
+
+  render_h2_func(m_galaxy);
+  render_h2_func(m_galaxy_2);
 
   glDisable(GL_POINT_SPRITE_ARB);
   glDisable(GL_TEXTURE_2D);
@@ -509,21 +561,33 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
 
   case SDL_KEYDOWN:
     switch (m_event.key.keysym.sym) {
-    case SDLK_END:
-      m_galaxy.SetPertN(m_galaxy.GetPertN() - 1);
+    case SDLK_END: {
+      const int32_t new_pert_n = std::max(m_galaxy.GetPertN() - 1, 0);
+      std::cout << "Set pertN to " << new_pert_n << std::endl;
+      m_galaxy.SetPertN(new_pert_n);
       break;
+    }
 
-    case SDLK_HOME:
-      m_galaxy.SetPertN(m_galaxy.GetPertN() + 1);
+    case SDLK_HOME: {
+      const int32_t new_pert_n = m_galaxy.GetPertN() + 1;
+      std::cout << "Set pertN to " << new_pert_n << std::endl;
+      m_galaxy.SetPertN(new_pert_n);
       break;
+    }
 
-    case SDLK_PAGEDOWN:
-      m_galaxy.SetPertAmp(m_galaxy.GetPertAmp() - 10.0f);
+    case SDLK_PAGEDOWN: {
+      const float new_pert_amp = std::max(m_galaxy.GetPertAmp() - 10.0f, 0.0f);
+      std::cout << "Set pertAmp to " << new_pert_amp << std::endl;
+      m_galaxy.SetPertAmp(new_pert_amp);
       break;
+    }
 
-    case SDLK_PAGEUP:
-      m_galaxy.SetPertAmp(m_galaxy.GetPertAmp() + 10.0f);
+    case SDLK_PAGEUP: {
+      const float new_pert_amp = m_galaxy.GetPertAmp() + 10.0f;
+      std::cout << "Set pertAmp to " << new_pert_amp << std::endl;
+      m_galaxy.SetPertAmp(new_pert_amp);
       break;
+    }
 
     case SDLK_1:
       m_camOrient = 0;
@@ -601,21 +665,91 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
       m_galaxy.SetSigma(std::max(m_galaxy.GetSigma() - 0.05, 0.05));
       break;
 
+    // Stars
     case SDLK_i: {
       constexpr int32_t kStepSize = 10000;
       const int32_t current_num_stars = m_galaxy.GetNumStars();
-      const int32_t future_num_stars = current_num_stars + kStepSize;
-      std::cout << "Increasing num stars from " << current_num_stars << " to " << future_num_stars << "\n"; 
-      m_galaxy.SetNumStars(std::min(future_num_stars, std::numeric_limits<int32_t>::max()));
+      const int32_t future_num_stars = std::min(
+          current_num_stars + kStepSize, std::numeric_limits<int32_t>::max());
+      std::cout << "Set num stars to " << future_num_stars << "\n";
+      m_galaxy.SetNumStars(future_num_stars);
       break;
     }
-
     case SDLK_o: {
       constexpr int32_t kStepSize = 10000;
       const int32_t current_num_stars = m_galaxy.GetNumStars();
-      const int32_t future_num_stars = current_num_stars - kStepSize;
-      std::cout << "Decreasing num stars from " << current_num_stars << " to " << future_num_stars << "\n"; 
-      m_galaxy.SetNumStars(std::max(future_num_stars, 1000));
+      const int32_t future_num_stars =
+          std::max(current_num_stars - kStepSize, 1000);
+      std::cout << "Set num stars to " << future_num_stars << "\n";
+      m_galaxy.SetNumStars(future_num_stars);
+      break;
+    }
+    // H2
+    case SDLK_k: {
+      constexpr int32_t kStepSize = 100;
+      const int32_t cur_H2 = m_galaxy.GetNumH2();
+      const int32_t future_H2 =
+          std::min(cur_H2 + kStepSize, std::numeric_limits<int32_t>::max());
+      std::cout << "Set num H2 to " << future_H2 << "\n";
+      m_galaxy.SetNumH2(future_H2);
+      break;
+    }
+    case SDLK_l: {
+      constexpr int32_t kStepSize = 100;
+      const int32_t cur_H2 = m_galaxy.GetNumH2();
+      const int32_t future_H2 = std::max(cur_H2 - kStepSize, 100);
+      std::cout << "Set num H2 to " << future_H2 << "\n";
+      m_galaxy.SetNumH2(future_H2);
+      break;
+    }
+    // DustToStarRatio
+    case SDLK_9: {
+      constexpr float kStepSize = 0.05;
+      const float cur_ratio = m_galaxy.GetDustStarsRatio();
+      const float future_ratio = cur_ratio + kStepSize;
+      std::cout << "Set dust to star ratio to " << future_ratio << "\n";
+      m_galaxy.SetDustStarsRatio(future_ratio);
+      break;
+    }
+    case SDLK_0: {
+      constexpr float kStepSize = 0.05;
+      const float cur_ratio = m_galaxy.GetDustStarsRatio();
+      const float future_ratio = std::max(cur_ratio - kStepSize, 0.005f);
+      std::cout << "Set dust to star ratio to " << future_ratio << "\n";
+      m_galaxy.SetDustStarsRatio(future_ratio);
+      break;
+    }
+
+    case SDLK_UP: {
+      constexpr int32_t kStepSize = 100;
+      Vec2D center = m_galaxy.GetGalaxyCenter();
+      m_galaxy.SetGalaxyCenter(Vec2D(center.x, center.y + kStepSize));
+      std::cout << "Set new Galaxy center: "
+                << m_galaxy.GetGalaxyCenter().to_string() << "\n";
+      break;
+    }
+    case SDLK_DOWN: {
+      constexpr int32_t kStepSize = 100;
+      Vec2D center = m_galaxy.GetGalaxyCenter();
+      m_galaxy.SetGalaxyCenter(Vec2D(center.x, center.y - kStepSize));
+      std::cout << "Set new Galaxy center: "
+                << m_galaxy.GetGalaxyCenter().to_string() << "\n";
+      break;
+    }
+    case SDLK_LEFT: {
+      constexpr int32_t kStepSize = 100;
+      Vec2D center = m_galaxy.GetGalaxyCenter();
+      m_galaxy.SetGalaxyCenter(Vec2D(center.x - kStepSize, center.y));
+      std::cout << "Set new Galaxy center: "
+                << m_galaxy.GetGalaxyCenter().to_string() << "\n";
+      break;
+    }
+    case SDLK_RIGHT: {
+      constexpr int32_t kStepSize = 100;
+      Vec2D center = m_galaxy.GetGalaxyCenter();
+      m_galaxy.SetGalaxyCenter(Vec2D(center.x + kStepSize, center.y));
+      std::cout << "Set new Galaxy center: "
+                << m_galaxy.GetGalaxyCenter().to_string() << "\n";
       break;
     }
 
@@ -699,9 +833,10 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
           0.75,   // excentricity at the edge of the core
           0.9,    // excentricity at the edge of the disk
           0.5,
-          200,                    // orbital velocity at the edge of the core
-          300,                    // orbital velovity at the edge of the disk
-          30000, true, 0, 0, 70); // total number of stars
+          200, // orbital velocity at the edge of the core
+          300, // orbital velovity at the edge of the disk
+          30000, true, 0, 0, 70,
+          m_galaxy.GetGalaxyCenter()); // total number of stars
       break;
 
     case SDLK_KP2:
@@ -712,9 +847,10 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
           0.9,    // excentricity at the edge of the core
           0.9,    // excentricity at the edge of the disk
           0.5,
-          200,                    // orbital velocity at the edge of the core
-          300,                    // orbital velovity at the edge of the disk
-          30000, true, 0, 0, 70); // total number of stars
+          200, // orbital velocity at the edge of the core
+          300, // orbital velovity at the edge of the disk
+          30000, true, 0, 0, 70,
+          m_galaxy.GetGalaxyCenter()); // total number of stars
       break;
     case SDLK_KP3:
       m_galaxy.Reset(
@@ -724,9 +860,10 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
           1.35,   // excentricity at the edge of the core
           1.05,   // excentricity at the edge of the disk
           0.5,
-          200,                    // orbital velocity at the edge of the core
-          300,                    // orbital velovity at the edge of the disk
-          40000, true, 0, 0, 70); // total number of stars
+          200, // orbital velocity at the edge of the core
+          300, // orbital velovity at the edge of the disk
+          40000, true, 0, 0, 70,
+          m_galaxy.GetGalaxyCenter()); // total number of stars
       break;
 
     // Typ Sa
@@ -738,9 +875,10 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
           0.75,   // excentricity at the edge of the core
           1.0,    // excentricity at the edge of the disk
           0.5,
-          200,                    // orbital velocity at the edge of the core
-          300,                    // orbital velovity at the edge of the disk
-          40000, true, 0, 0, 70); // total number of stars
+          200, // orbital velocity at the edge of the core
+          300, // orbital velovity at the edge of the disk
+          40000, true, 0, 0, 70,
+          m_galaxy.GetGalaxyCenter()); // total number of stars
       break;
 
     // Typ SBb
@@ -752,9 +890,10 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
           1.45,   // excentricity at the edge of the core
           1.0,    // excentricity at the edge of the disk
           0.5,
-          400,                    // orbital velocity at the edge of the core
-          420,                    // orbital velovity at the edge of the disk
-          40000, true, 0, 0, 70); // total number of stars
+          400, // orbital velocity at the edge of the core
+          420, // orbital velovity at the edge of the disk
+          40000, true, 0, 0, 70,
+          m_galaxy.GetGalaxyCenter()); // total number of stars
       break;
 
     // zum debuggen
@@ -766,9 +905,10 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
           1.45,   // excentricity at the edge of the core
           1.0,    // excentricity at the edge of the disk
           0.5,
-          400,                    // orbital velocity at the edge of the core
-          200,                    // orbital velovity at the edge of the disk
-          40000, true, 0, 0, 70); // total number of stars
+          400, // orbital velocity at the edge of the core
+          200, // orbital velovity at the edge of the disk
+          40000, true, 0, 0, 70,
+          m_galaxy.GetGalaxyCenter()); // total number of stars
       break;
 
     // für Wikipedia: realistische Rotationskurve
@@ -780,10 +920,10 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
           0.75,   // excentricity at the edge of the core
           0.9,    // excentricity at the edge of the disk
           0.5,
-          400,             // orbital velocity at the edge of the core
-          420,             // orbital velovity at the edge of the disk
-          30000,           // total number of stars
-          true, 0, 0, 70); // has dark matter
+          400,   // orbital velocity at the edge of the core
+          420,   // orbital velovity at the edge of the disk
+          30000, // total number of stars
+          true, 0, 0, 70, m_galaxy.GetGalaxyCenter()); // has dark matter
       break;
 
     case SDLK_KP8:
@@ -794,10 +934,10 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
           0.75,   // excentricity at the edge of the core
           0.9,    // excentricity at the edge of the disk
           0.5,
-          400,             // orbital velocity at the edge of the core
-          150,             // orbital velovity at the edge of the disk
-          30000,           // total number of stars
-          true, 0, 0, 70); // has dark matter
+          400,   // orbital velocity at the edge of the core
+          150,   // orbital velovity at the edge of the disk
+          30000, // total number of stars
+          true, 0, 0, 70, m_galaxy.GetGalaxyCenter()); // has dark matter
       break;
 
     case SDLK_KP0:
@@ -814,7 +954,7 @@ void NBodyWnd::OnProcessEvents(uint8_t type) {
           true,  // has dark matter
           2,     // Perturbations per full ellipse
           40,    // Amplitude damping factor of perturbation
-          80);   // dust render size in pixel
+          80, m_galaxy.GetGalaxyCenter()); // dust render size in pixel
       break;
 
     case SDLK_F12:

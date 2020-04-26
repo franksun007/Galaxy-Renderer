@@ -82,7 +82,7 @@ protected:
   static GLuint s_fontBase;
 
 protected:
-  float m_fov; ///< Length of an axis
+  float m_fov;  ///< Length of an axis
   int m_width;  ///< Width of the window in pixel
   int m_height; ///< Height of the window in pixel
   int m_fps;

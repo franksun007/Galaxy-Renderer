@@ -13,10 +13,9 @@ CumulativeDistributionFunction::CumulativeDistributionFunction()
       m_vX2() {}
 
 //-------------------------------------------------------------------------------------------------
-void CumulativeDistributionFunction::SetupRealistic(float I0, float k,
-                                                    float a, float RBulge,
-                                                    float min, float max,
-                                                    int nSteps) {
+void CumulativeDistributionFunction::SetupRealistic(float I0, float k, float a,
+                                                    float RBulge, float min,
+                                                    float max, int nSteps) {
   m_fMin = min;
   m_fMax = max;
   m_nSteps = nSteps;
@@ -137,13 +136,13 @@ float CumulativeDistributionFunction::ValFromProb(float fVal) {
 
 //-------------------------------------------------------------------------------------------------
 float CumulativeDistributionFunction::IntensityBulge(float R, float I0,
-                                                      float k) {
+                                                     float k) {
   return I0 * exp(-k * pow(R, 0.25));
 }
 
 //-------------------------------------------------------------------------------------------------
 float CumulativeDistributionFunction::IntensityDisc(float R, float I0,
-                                                     float a) {
+                                                    float a) {
   return I0 * exp(-R / a);
 }
 

@@ -59,11 +59,12 @@ private:
 
   int m_camOrient; ///< Index of the camera orientation to use
   int m_starRenderType;
-  float m_roi;     ///< Radius of the region of interest
+  float m_roi;      ///< Radius of the region of interest
   uint32_t m_flags; ///< The display flags
   bool m_bDumpImage;
 
   Galaxy m_galaxy;
+  Galaxy m_galaxy_2;
 
   // Star color management
   int m_colNum;
