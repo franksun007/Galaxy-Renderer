@@ -14,7 +14,7 @@ cc_test(
 )
 
 cc_library(
-    name = "cumulative_distribution",
-    srcs = ["cumulative_distribution.cc"],
-    hdrs = ["cumulative_distribution.h"],
+    name = "cumulative-distribution-func",
+    srcs = ["cumulative-distribution-func.cc"],
+    hdrs = ["cumulative-distribution-func.h"],
 )
