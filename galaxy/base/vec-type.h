@@ -7,6 +7,7 @@ namespace galaxy {
 
 struct Vec2D {
 public:
+  Vec2D(): x(0.f), y(0.f) {}; 
   Vec2D(const float x, const float y);
 
   // Public field for easy access
@@ -20,6 +21,7 @@ public:
 
 struct Vec3D {
 public:
+  Vec3D(): x(0.f), y(0.f), z(0.f) {}; 
   Vec3D(const float x, const float y, const float z);
 
   // Public field for easy access

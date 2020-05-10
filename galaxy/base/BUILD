@@ -1,3 +1,5 @@
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
     name = "vec-type",
     srcs = ["vec-type.cc"],

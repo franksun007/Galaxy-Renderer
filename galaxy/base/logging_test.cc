@@ -24,7 +24,10 @@ TEST(TestLogging, TestCheck) {
   CHECK_GE(1000, 1000);
   CHECK_GE(2000, 1000);
   CHECK_GT(2000, 1000);
-  CHECK_NE(2000, 1000);
+  CHECK_NE(2000, 1000) << "message";
+
+  void * ptr = this;
+  CHECK_NOTNULL(ptr);
 }
 
 TEST(TestLogging, TestLog) {

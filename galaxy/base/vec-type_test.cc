@@ -7,6 +7,8 @@ TEST(TestVecType, test_vec2d) {
   Vec2D a(99, 22);
   Vec2D b(23, 45);
   ASSERT_FALSE(a == b);
+  ASSERT_EQ(a.x, 99.f);
+  ASSERT_EQ(a.y, 22.f);
 
   Vec2D c(99, 22);
   ASSERT_TRUE(a == c);
@@ -19,6 +21,12 @@ TEST(TestVecType, test_vec2d) {
 
   Vec2D aa = a;
   ASSERT_TRUE(aa == a);
+
+  Vec2D m;
+  Vec2D n = m;
+  ASSERT_TRUE(n == m);
+  ASSERT_EQ(m.x, 0.0);
+  ASSERT_EQ(m.y, 0.0);
 }
 
 TEST(TestVecType, test_vec2d_to_string) {
@@ -36,6 +44,9 @@ TEST(TestVecType, test_vec3d) {
   Vec3D a(99, 22, 11);
   Vec3D b(23, 45, 93);
   ASSERT_FALSE(a == b);
+    ASSERT_EQ(a.x, 0.0);
+    ASSERT_EQ(a.y, 0.0);
+    ASSERT_EQ(a.z, 0.0);
 
   Vec3D c(99, 22, 11);
   ASSERT_TRUE(a == c);
@@ -51,6 +62,13 @@ TEST(TestVecType, test_vec3d) {
 
   Vec3D aa = a;
   ASSERT_TRUE(aa == a);
+
+Vec3D m;
+  Vec3D n = m;
+  ASSERT_TRUE(n == m);
+  ASSERT_EQ(m.x, 0.0);
+  ASSERT_EQ(m.y, 0.0);
+  ASSERT_EQ(m.z, 0.0);
 }
 
 TEST(TestVecType, test_vec3d_to_string) {

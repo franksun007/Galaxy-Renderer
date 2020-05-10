@@ -65,7 +65,6 @@ public:
 };
 
 #define _GALAXY_LOG_DEBUG                                                      \
-  \ 
   ::galaxy::LogMessage(__FILE__, __LINE__, ::galaxy::DEBUG)
 #define _GALAXY_LOG_INFO                                                       \
   ::galaxy::LogMessage(__FILE__, __LINE__, ::galaxy::INFO)
@@ -171,6 +170,14 @@ string *MakeCheckOpString(const T1 &v1, const T2 &v2, const char *exprtext) {
   MakeCheckOpValueString(comb.ForVar1(), v1);
   MakeCheckOpValueString(comb.ForVar2(), v2);
   return comb.NewString();
+}
+
+template <typename T>
+T&& CheckNotNull(const char* file, int line, const char* exprtext, T&& t) {
+  if (t == nullptr) {
+    LogMessageFatal(file, line) << string(exprtext);
+  }
+  return std::forward<T>(t);
 }
 
 // Helper functions for CHECK_OP macro.
