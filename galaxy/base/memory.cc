@@ -1,7 +1,7 @@
 
 #include <cstdlib>
 
-#include "base/memory.h"
+#include "memory.h"
 
 
 namespace galaxy {

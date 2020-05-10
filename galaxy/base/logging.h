@@ -13,23 +13,24 @@ limitations under the License.
 #ifndef __GALAXY_BASE_LOGGING_H__
 #define __GALAXY_BASE_LOGGING_H__
 
-#include <atomic>
 #include <limits>
 #include <memory>
 #include <sstream>
 
 #include "absl/base/log_severity.h"
 #include "absl/strings/string_view.h"
-#include "base/macros.h"
-#include "base/types.h"
+
+#include "macros.h"
+#include "types.h"
 
 namespace galaxy {
 
-constexpr int32_t INFO = 0;            
-constexpr int32_t WARNING = 1;         
-constexpr int32_t ERROR = 2;           
-constexpr int32_t FATAL = 3;           
-constexpr int32_t NUM_SEVERITIES = 4;  
+constexpr int32_t DEBUG = 0;            
+constexpr int32_t INFO = 1;            
+constexpr int32_t WARNING = 2;         
+constexpr int32_t ERROR = 3;           
+constexpr int32_t FATAL = 4;           
+constexpr int32_t NUM_SEVERITIES = 5;  
 
 class LogMessage : public std::basic_ostringstream<char> {
  public:
@@ -63,6 +64,8 @@ class LogMessageNull : public std::basic_ostringstream<char> {
   ~LogMessageNull() override {}
 };
 
+#define _GALAXY_LOG_DEBUG \ 
+  ::galaxy::LogMessage(__FILE__, __LINE__, ::galaxy::DEBUG)
 #define _GALAXY_LOG_INFO \
   ::galaxy::LogMessage(__FILE__, __LINE__, ::galaxy::INFO)
 #define _GALAXY_LOG_WARNING \
