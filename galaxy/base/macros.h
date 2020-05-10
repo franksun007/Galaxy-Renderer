@@ -24,9 +24,9 @@ limitations under the License.
 #define ATTRIBUTE_WEAK __attribute__((weak))
 #define PACKED __attribute__((packed))
 #define MUST_USE_RESULT __attribute__((warn_unused_result))
-#define PRINTF_ATTRIBUTE(string_index, first_to_check) \
+#define PRINTF_ATTRIBUTE(string_index, first_to_check)                         \
   __attribute__((__format__(__printf__, string_index, first_to_check)))
-#define SCANF_ATTRIBUTE(string_index, first_to_check) \
+#define SCANF_ATTRIBUTE(string_index, first_to_check)                          \
   __attribute__((__format__(__scanf__, string_index, first_to_check)))
 #elif defined(_MSC_VER)
 // Non-GCC equivalents
@@ -54,18 +54,16 @@ limitations under the License.
 #define SCANF_ATTRIBUTE(string_index, first_to_check)
 #endif
 
-
-
 // Control visibility outside .so
 #if defined(_WIN32)
 #ifdef COMPILE_LIBRARY
 #define EXPORT __declspec(dllexport)
 #else
 #define EXPORT __declspec(dllimport)
-#endif  // COMPILE_LIBRARY
+#endif // COMPILE_LIBRARY
 #else
 #define EXPORT __attribute__((visibility("default")))
-#endif  // _WIN32
+#endif // _WIN32
 
 #ifdef __has_builtin
 #define HAS_BUILTIN(x) __has_builtin(x)
@@ -81,7 +79,7 @@ limitations under the License.
 //
 // We need to disable this for GPU builds, though, since nvcc8 and older
 // don't recognize `__builtin_expect` as a builtin, and fail compilation.
-#if (!defined(__NVCC__)) && \
+#if (!defined(__NVCC__)) &&                                                    \
     (HAS_BUILTIN(__builtin_expect) || (defined(__GNUC__) && __GNUC__ >= 3))
 #define PREDICT_FALSE(x) (__builtin_expect(x, 0))
 #define PREDICT_TRUE(x) (__builtin_expect(!!(x), 1))
@@ -92,19 +90,19 @@ limitations under the License.
 
 // A macro to disallow the copy constructor and operator= functions
 // This is usually placed in the private: declarations for a class.
-#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-  TypeName(const TypeName&) = delete;         \
-  void operator=(const TypeName&) = delete
+#define DISALLOW_COPY_AND_ASSIGN(TypeName)                                     \
+  TypeName(const TypeName &) = delete;                                         \
+  void operator=(const TypeName &) = delete
 
 // The ARRAYSIZE(arr) macro returns the # of elements in an array arr.
 //
 // The expression ARRAYSIZE(a) is a compile-time constant of type
 // size_t.
-#define ARRAYSIZE(a)         \
-  ((sizeof(a) / sizeof(*(a))) / \
+#define ARRAYSIZE(a)                                                           \
+  ((sizeof(a) / sizeof(*(a))) /                                                \
    static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
 
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L || \
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L ||           \
     (defined(_MSC_VER) && _MSC_VER >= 1900)
 // Define this to 1 if the code is compiled in C++11 mode; leave it
 // undefined otherwise.  Do NOT define it to 0 -- that causes
@@ -114,15 +112,14 @@ limitations under the License.
 
 #if defined(__clang__) && defined(LANG_CXX11) && defined(__has_warning)
 #if __has_feature(cxx_attributes) && __has_warning("-Wimplicit-fallthrough")
-#define FALLTHROUGH_INTENDED [[clang::fallthrough]]  // NOLINT
+#define FALLTHROUGH_INTENDED [[clang::fallthrough]] // NOLINT
 #endif
 #endif
 
 #ifndef FALLTHROUGH_INTENDED
-#define FALLTHROUGH_INTENDED \
-  do {                          \
+#define FALLTHROUGH_INTENDED                                                   \
+  do {                                                                         \
   } while (0)
 #endif
 
-
-#endif  // __GALAXY_BASE_MACROS_H__
+#endif // __GALAXY_BASE_MACROS_H__

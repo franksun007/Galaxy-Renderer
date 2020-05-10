@@ -3,16 +3,16 @@
 
 #include "memory.h"
 
-
 namespace galaxy {
 
-void* AlignedMalloc(size_t size, int minimum_alignment) {
-  void* ptr = nullptr;
+void *AlignedMalloc(size_t size, int minimum_alignment) {
+  void *ptr = nullptr;
   // posix_memalign requires that the requested alignment be at least
   // sizeof(void*). In this case, fall back on malloc which should return
   // memory aligned to at least the size of a pointer.
-  constexpr int required_alignment = sizeof(void*);
-  if (minimum_alignment < required_alignment) return Malloc(size);
+  constexpr int required_alignment = sizeof(void *);
+  if (minimum_alignment < required_alignment)
+    return Malloc(size);
   int err = posix_memalign(&ptr, minimum_alignment, size);
   if (err != 0) {
     return nullptr;
@@ -21,12 +21,12 @@ void* AlignedMalloc(size_t size, int minimum_alignment) {
   }
 }
 
-void AlignedFree(void* aligned_memory) { Free(aligned_memory); }
+void AlignedFree(void *aligned_memory) { Free(aligned_memory); }
 
-void* Malloc(size_t size) { return malloc(size); }
+void *Malloc(size_t size) { return malloc(size); }
 
-void* Realloc(void* ptr, size_t size) { return realloc(ptr, size); }
+void *Realloc(void *ptr, size_t size) { return realloc(ptr, size); }
 
-void Free(void* ptr) { free(ptr); }
+void Free(void *ptr) { free(ptr); }
 
-}  // namespace galaxy
+} // namespace galaxy

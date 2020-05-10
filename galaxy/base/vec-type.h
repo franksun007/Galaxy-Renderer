@@ -14,7 +14,7 @@ public:
   float y;
 
   const string to_string();
-  void operator=(const Vec2D& other);
+  void operator=(const Vec2D &other);
   bool operator==(const Vec2D &other);
 };
 
@@ -27,7 +27,7 @@ public:
   float z;
 
   const string to_string();
-  void operator=(const Vec3D& other);
+  void operator=(const Vec3D &other);
   bool operator==(const Vec3D &other);
 };
 

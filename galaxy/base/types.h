@@ -10,6 +10,6 @@ typedef unsigned char uint8_t;
 typedef int int32_t;
 typedef std::string string;
 
-}  // namespace galaxy
+} // namespace galaxy
 
-#endif  // __GALAXY_BASE_TYPES_H__
+#endif // __GALAXY_BASE_TYPES_H__

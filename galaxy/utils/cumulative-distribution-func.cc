@@ -6,15 +6,14 @@
 #include <cstdlib>
 #include <stdexcept>
 
-
 namespace galaxy {
 
 CumulativeDistributionFunc::CumulativeDistributionFunc()
     : v_m1(), v_y1(), v_x1(), v_m2(), v_y2(), v_x2() {}
 
-
-void CumulativeDistributionFunc::SetupRealistic(float i_0, float k, float a, float r_bulge, float min,
-                      float max, int n_steps) {
+void CumulativeDistributionFunc::SetupRealistic(float i_0, float k, float a,
+                                                float r_bulge, float min,
+                                                float max, int n_steps) {
   this->i_0 = i_0;
   this->k = k;
   this->a = a;
@@ -22,7 +21,7 @@ void CumulativeDistributionFunc::SetupRealistic(float i_0, float k, float a, flo
 
   this->f_min = min;
   this->f_max = max;
-  
+
   this->n_steps = n_steps;
 
   InitializeCDF(n_steps);
@@ -46,10 +45,11 @@ void CumulativeDistributionFunc::InitializeCDF(int n_steps) {
   v_x1.push_back(0.0);
   for (int i = 0; i < n_steps; i += 2) {
     x = (i + 2) * bin_size;
-    y += bin_size / 3 *
-         (CumulativeDistributionFunc::Intensity(f_min + i * bin_size) +
-          4 * CumulativeDistributionFunc::Intensity(f_min + (i + 1) * bin_size) +
-          CumulativeDistributionFunc::Intensity(f_min + (i + 2) * bin_size));
+    y +=
+        bin_size / 3 *
+        (CumulativeDistributionFunc::Intensity(f_min + i * bin_size) +
+         4 * CumulativeDistributionFunc::Intensity(f_min + (i + 1) * bin_size) +
+         CumulativeDistributionFunc::Intensity(f_min + (i + 2) * bin_size));
 
     v_m1.push_back((y - v_y1.back()) / (2 * bin_size));
     v_x1.push_back(x);
@@ -127,23 +127,20 @@ float CumulativeDistributionFunc::ValueFromProbability(float prob) {
   return v_y2[i] + v_m2[i] * remainder;
 }
 
-float CumulativeDistributionFunc::IntensityBulge(float r, float i_0,
-                                                     float k) {
+float CumulativeDistributionFunc::IntensityBulge(float r, float i_0, float k) {
   return i_0 * exp(-k * pow(r, 0.25));
 }
 
-float CumulativeDistributionFunc::IntensityDisc(float r, float i_0,
-                                                    float a) {
+float CumulativeDistributionFunc::IntensityDisc(float r, float i_0, float a) {
   return i_0 * exp(-r / a);
 }
 
 float CumulativeDistributionFunc::Intensity(float x) {
   if (x < r_bulge) {
     return IntensityBulge(x, i_0, k);
-  } else { 
-    return IntensityDisc(x - r_bulge, IntensityBulge(r_bulge, i_0, k),
-                             a);
-}
+  } else {
+    return IntensityDisc(x - r_bulge, IntensityBulge(r_bulge, i_0, k), a);
+  }
 }
 
-}  // namespace galaxy
+} // namespace galaxy

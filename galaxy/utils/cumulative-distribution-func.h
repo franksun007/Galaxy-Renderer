@@ -5,7 +5,6 @@
 
 class CumulativeDistributionFunc {
 public:
-
   CumulativeDistributionFunc();
   ~CumulativeDistributionFunc();
 

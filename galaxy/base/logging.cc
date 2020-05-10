@@ -12,6 +12,8 @@ limitations under the License.
 
 #include "logging.h"
 
+// TODO(Frank): Cleanup.
+
 // TODO(b/142492876): Avoid depending on absl internal.
 #include "absl/base/internal/sysinfo.h"
 
@@ -20,9 +22,8 @@ limitations under the License.
 
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <string>
-#include <unordered_map>
+#include <time.h>
 
 namespace galaxy {
 
@@ -43,8 +44,7 @@ uint64_t NowNanos() {
 
 static uint64_t NowMicros() { return NowNanos() / kMicrosToNanos; }
 
-
-int ParseInteger(const char* str, size_t size) {
+int ParseInteger(const char *str, size_t size) {
   // Ideally we would use env_var / safe_strto64, but it is
   // hard to use here without pulling in a lot of dependencies,
   // so we use std:istringstream instead
@@ -56,7 +56,7 @@ int ParseInteger(const char* str, size_t size) {
 }
 
 // Parse log level (int64) from environment variable (char*)
-int64_t LogLevelStrToInt(const char* env_var_val) {
+int64_t LogLevelStrToInt(const char *env_var_val) {
   if (env_var_val == nullptr) {
     return kDefaultLoggingLevel;
   }
@@ -64,24 +64,23 @@ int64_t LogLevelStrToInt(const char* env_var_val) {
 }
 
 int64_t MinLogLevelFromEnv() {
-  const char* env_var_val = getenv("MIN_LOG_LEVEL");
+  const char *env_var_val = getenv("MIN_LOG_LEVEL");
   return LogLevelStrToInt(env_var_val);
 }
 
 bool EmitThreadIdFromEnv() {
-  const char* env_var_val = getenv("LOG_THREAD_ID");
+  const char *env_var_val = getenv("LOG_THREAD_ID");
   return env_var_val == nullptr
              ? false
              : ParseInteger(env_var_val, strlen(env_var_val)) != 0;
 }
 
-}  // namespace
+} // namespace
 
-
-LogMessage::LogMessage(const char* fname, int line, int severity)
+LogMessage::LogMessage(const char *fname, int line, int severity)
     : fname_(fname), line_(line), severity_(severity) {}
 
-LogMessage& LogMessage::AtLocation(const char* fname, int line) {
+LogMessage &LogMessage::AtLocation(const char *fname, int line) {
   fname_ = fname;
   line_ = line;
   return *this;
@@ -94,7 +93,6 @@ LogMessage::~LogMessage() {
     GenerateLogMessage();
   }
 }
-
 
 void LogMessage::GenerateLogMessage() {
   static bool log_thread_id = EmitThreadIdFromEnv();
@@ -116,7 +114,7 @@ void LogMessage::GenerateLogMessage() {
           "IWEF"[severity_], tid_buffer, fname_, line_, str().c_str());
 }
 
-LogMessageFatal::LogMessageFatal(const char* file, int line)
+LogMessageFatal::LogMessageFatal(const char *file, int line)
     : LogMessage(file, line, FATAL) {}
 LogMessageFatal::~LogMessageFatal() {
   // abort() ensures we don't return (we promised we would not via
@@ -125,8 +123,7 @@ LogMessageFatal::~LogMessageFatal() {
   abort();
 }
 
-template <>
-void MakeCheckOpValueString(std::ostream* os, const char& v) {
+template <> void MakeCheckOpValueString(std::ostream *os, const char &v) {
   if (v >= 32 && v <= 126) {
     (*os) << "'" << v << "'";
   } else {
@@ -135,7 +132,7 @@ void MakeCheckOpValueString(std::ostream* os, const char& v) {
 }
 
 template <>
-void MakeCheckOpValueString(std::ostream* os, const signed char& v) {
+void MakeCheckOpValueString(std::ostream *os, const signed char &v) {
   if (v >= 32 && v <= 126) {
     (*os) << "'" << v << "'";
   } else {
@@ -144,7 +141,7 @@ void MakeCheckOpValueString(std::ostream* os, const signed char& v) {
 }
 
 template <>
-void MakeCheckOpValueString(std::ostream* os, const unsigned char& v) {
+void MakeCheckOpValueString(std::ostream *os, const unsigned char &v) {
   if (v >= 32 && v <= 126) {
     (*os) << "'" << v << "'";
   } else {
@@ -154,26 +151,26 @@ void MakeCheckOpValueString(std::ostream* os, const unsigned char& v) {
 
 #if LANG_CXX11
 template <>
-void MakeCheckOpValueString(std::ostream* os, const std::nullptr_t& p) {
+void MakeCheckOpValueString(std::ostream *os, const std::nullptr_t &p) {
   (*os) << "nullptr";
 }
 #endif
 
-CheckOpMessageBuilder::CheckOpMessageBuilder(const char* exprtext)
+CheckOpMessageBuilder::CheckOpMessageBuilder(const char *exprtext)
     : stream_(new std::ostringstream) {
   *stream_ << "Check failed: " << exprtext << " (";
 }
 
 CheckOpMessageBuilder::~CheckOpMessageBuilder() { delete stream_; }
 
-std::ostream* CheckOpMessageBuilder::ForVar2() {
+std::ostream *CheckOpMessageBuilder::ForVar2() {
   *stream_ << " vs. ";
   return stream_;
 }
 
-string* CheckOpMessageBuilder::NewString() {
+string *CheckOpMessageBuilder::NewString() {
   *stream_ << ")";
   return new string(stream_->str());
 }
 
-}  // namespace galaxy
+} // namespace galaxy

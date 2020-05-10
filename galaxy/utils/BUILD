@@ -1,20 +1,14 @@
-cc_library(
-    name = "gravitational-force",
-    srcs = ["gravitational-force.cc"],
-    hdrs = ["gravitational-force.h"],
-)
+cc_library(name = "gravitational-force", srcs = ["gravitational-force.cc"],
+           hdrs = ["gravitational-force.h"], )
 
-cc_test(
-    name = "gravitation-force_test",
-    srcs = ["gravitational-force_test.cc"],
-    deps = [
-        ":gravitational-force",
-        "@com_google_googletest//:gtest_main",
-    ]
-)
+    cc_test(name = "gravitation-force_test",
+            srcs = ["gravitational-force_test.cc"],
+            deps =
+                [
+                  ":gravitational-force",
+                  "@com_google_googletest//:gtest_main",
+                ])
 
-cc_library(
-    name = "cumulative-distribution-func",
-    srcs = ["cumulative-distribution-func.cc"],
-    hdrs = ["cumulative-distribution-func.h"],
-)
+        cc_library(name = "cumulative-distribution-func",
+                   srcs = ["cumulative-distribution-func.cc"],
+                   hdrs = ["cumulative-distribution-func.h"], )

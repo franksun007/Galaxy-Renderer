@@ -34,4 +34,4 @@ TEST(TestLogging, TestLog) {
   LOG(ERROR) << "This is a logging @ the error level";
 }
 
-}  // namespace galaxy
+} // namespace galaxy
