@@ -1,57 +1,34 @@
 #ifndef __GALAXY_BASE_VEC_TYPE_H__
 #define __GALAXY_BASE_VEC_TYPE_H__
 
-#include <string>
+#include "types.h"
 
 namespace galaxy {
-namespace {
-constexpr float kEpsilon = 1e-7;
-}  // namespace
 
 struct Vec2D {
 public:
-  Vec2D(const float x_ = 0, const float y_ = 0) : x(x_), y(y_) {}
+  Vec2D(const float, const float);
+
+  // Public field for easy access
   float x;
   float y;
 
-  const std::string to_string() {
-    return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
-  }
-
-  void operator=(const Vec2D& other) {
-    x = other.x;
-    y = other.y;
-  }
-
-  bool operator==(const Vec2D &other) {
-    return std::abs(x - other.x) < kEpsilon && std::abs(y - other.y) < kEpsilon;
-  }
+  const string to_string();
+  void operator=(const Vec2D& other);
+  bool operator==(const Vec2D &other);
 };
 
 struct Vec3D {
 public:
-  Vec3D(const float x_ = 0, const float y_ = 0, const float z_ = 0)
-      : x(x_), y(y_), z(z_) {}
+  Vec3D(const float, const float, const float);
+  // Public field for easy access
   float x;
   float y;
   float z;
 
-  const std::string to_string() {
-    return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " +
-           std::to_string(z) + ")";
-  }
-
-  void operator=(const Vec3D& other) {
-    x = other.x;
-    y = other.y;
-    z = other.z;
-  }
-
-  bool operator==(const Vec3D &other) {
-    return std::abs(x - other.x) < kEpsilon &&
-           std::abs(y - other.y) < kEpsilon && 
-           std::abs(z - other.z) < kEpsilon;
-  }
+  const string to_string();
+  void operator=(const Vec3D& other);
+  bool operator==(const Vec3D &other);
 };
 
 } // namespace galaxy

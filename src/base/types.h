@@ -1,6 +1,7 @@
 #ifndef __GALAXY_BASE_TYPES_H__
 #define __GALAXY_BASE_TYPES_H__
 
+#include <cstddef>
 #include <string>
 
 namespace galaxy {

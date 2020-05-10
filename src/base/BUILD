@@ -1,6 +1,11 @@
 cc_library(
     name = "vec-type",
     hdrs = ["vec-type.h"],
+    srcs = ["vec-type.cc"],
+    deps = [
+        ":types",
+        "@com_google_absl//absl/strings:str_format",
+    ]
 )
 
 cc_test(
@@ -10,4 +15,26 @@ cc_test(
         ":vec-type",
         "@com_google_googletest//:gtest_main",
     ]
+)
+
+cc_library(
+    name = "macros",
+    hdrs = ["macros.h"],
+)
+
+cc_library(
+    name = "logging",
+    hdrs = ["logging.h"],
+    srcs = ["logging.cc"],
+)
+
+cc_library(
+    name = "memory",
+    hdrs = ["memory.h"],
+    srcs = ["memory.cc"],
+)
+
+cc_library(
+    name = "types",
+    hdrs = ["types.h"],
 )

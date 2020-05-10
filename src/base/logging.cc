@@ -10,18 +10,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#include "base/logging.h"
+#include "logging.h"
 
 // TODO(b/142492876): Avoid depending on absl internal.
 #include "absl/base/internal/cycleclock.h"
 #include "absl/base/internal/sysinfo.h"
 
-#include "base/macros.h"
+#include "macros.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
 #include <string>
 #include <unordered_map>
 
