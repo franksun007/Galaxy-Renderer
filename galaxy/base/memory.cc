@@ -1,11 +1,11 @@
 
-#include <cstdlib>
-
 #include "memory.h"
+
+#include <cstdlib>
 
 namespace galaxy {
 
-void *AlignedMalloc(size_t size, int minimum_alignment) {
+void *AlignedMalloc(size_t size, int32_t minimum_alignment) {
   void *ptr = nullptr;
   // posix_memalign requires that the requested alignment be at least
   // sizeof(void*). In this case, fall back on malloc which should return

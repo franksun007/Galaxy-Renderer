@@ -2,7 +2,7 @@
 #ifndef __GALAXY_BASE_MEMORY_H__
 #define __GALAXY_BASE_MEMORY_H__
 
-#include "base/types.h"
+#include "types.h"
 
 namespace galaxy {
 // Aligned allocation/deallocation. `minimum_alignment` must be a power of 2
