@@ -44,9 +44,9 @@ TEST(TestVecType, test_vec3d) {
   Vec3D a(99, 22, 11);
   Vec3D b(23, 45, 93);
   ASSERT_FALSE(a == b);
-    ASSERT_EQ(a.x, 0.0);
-    ASSERT_EQ(a.y, 0.0);
-    ASSERT_EQ(a.z, 0.0);
+  ASSERT_EQ(a.x, 99.0);
+  ASSERT_EQ(a.y, 22.0);
+  ASSERT_EQ(a.z, 11.0);
 
   Vec3D c(99, 22, 11);
   ASSERT_TRUE(a == c);
@@ -84,6 +84,20 @@ TEST(TestVecType, test_vec3d_to_string) {
   ASSERT_EQ(e.to_string(), "(22.000, 22.000, 11.000)");
   Vec3D f(99, 22, 13);
   ASSERT_EQ(f.to_string(), "(99.000, 22.000, 13.000)");
+}
+
+TEST(TestVecType, test_vec3d_mag_wrt_0) {
+  Vec3D a(99, 22, 11);
+  ASSERT_NEAR(a.MagnitudeWRT0(), 102.00980345045274, 1e-6);
+}
+
+TEST(TestVecType, test_vec3d_normalization) {
+  Vec3D a(99, 22, 11);
+  a.NormalizedByMagnitudeWRT0();
+
+  ASSERT_NEAR(a.x, 99.0 / 102.00980345045274, 1e-6);
+  ASSERT_NEAR(a.y, 22.0 / 102.00980345045274, 1e-6);
+  ASSERT_NEAR(a.z, 11.0 / 102.00980345045274, 1e-6);
 }
 
 } // namespace galaxy

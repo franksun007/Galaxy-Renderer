@@ -140,9 +140,10 @@ SDLWindow::SDLWindow(int32_t width, int32_t height, float axis_len,
   CHECK_NE(SDL_Init(SDL_INIT_VIDEO), -1) << SDL_GetError();
   atexit(SDL_Quit);
 
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-//   SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-//   SDL_GL_SetAttribute(SDL_GL_STEREO, 1);
+  // Enable doublebuffer to cap FPS @ monitor refresh rate.
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  // More fine grained redering quality.
+  SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 

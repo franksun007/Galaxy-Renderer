@@ -3,6 +3,8 @@
 
 #include <vector>
 
+namespace galaxy {
+
 class CumulativeDistributionFunc {
 public:
   CumulativeDistributionFunc();
@@ -41,5 +43,7 @@ private:
   float IntensityDisc(float r, float i_0, float a);
   float Intensity(float x);
 };
+
+}  // galaxy
 
 #endif // __GALAXY_UTILS_CUMULATIVE_DISTRIBUTION_FUNC_H__

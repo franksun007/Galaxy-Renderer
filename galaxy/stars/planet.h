@@ -1,0 +1,4 @@
+#ifndef __GALAXY_STARTS_PLANET_H__
+#define __GALAXY_STARTS_PLANET_H__
+
+#endif  // __GALAXY_STARTS_PLANET_H__

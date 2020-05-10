@@ -27,7 +27,6 @@ void mod(SDLWindow *window) {
   std::cout << std::endl;
 
   window->SetDrawStats(true);
-  // std::this_thread::sleep_for(std::chrono::seconds(100));
 }
 
 // Launch the SDL window without drawing anything.

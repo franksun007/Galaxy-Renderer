@@ -3,5 +3,5 @@
 set -e
 set -x
 
-sudo apt-get install libsdl1.2-dev libsdl-gfx1.2-dev
+sudo apt-get install libsdl1.2-dev libsdl-gfx1.2-dev freeglut3-dev
 

@@ -18,6 +18,7 @@ float ScaledGravitationalForce(const float mass_a, const float mass_b,
 float RelativeGravitationalForce(const float mass_a, const float mass_b,
                                  const float distance);
 
+
 } // namespace galaxy
 
 #endif // __GALAXY_UTILS_GRAVITATIONAL_FORCE_H__

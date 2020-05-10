@@ -27,7 +27,6 @@ void CumulativeDistributionFunc::SetupRealistic(float i_0, float k, float a,
   InitializeCDF(n_steps);
 }
 
-//-------------------------------------------------------------------------------------------------
 void CumulativeDistributionFunc::InitializeCDF(int n_steps) {
   const float bin_size = (f_max - f_min) / n_steps;
   float x = 0;
@@ -55,7 +54,6 @@ void CumulativeDistributionFunc::InitializeCDF(int n_steps) {
     v_x1.push_back(x);
     v_y1.push_back(y);
 
-    //    printf("%2.2f, %2.2f, %2.2f\n", m_fMin + (i+2) * h, v, h);
   }
   v_m1.push_back(0.0);
 
