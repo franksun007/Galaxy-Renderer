@@ -31,8 +31,16 @@ void Draw_Spheres (void)
     glPushMatrix ();
        glTranslatef    (-1.5, 0.0, 0.0);
        glRotatef       (60.0, 1,0,0);
-       glRotatef       (zRotated*2.0, 0,0,1);   // Red ball rotates at twice the rate of blue ball.
-       glutSolidSphere (1.0, 20, 50);
+       glRotatef       (zRotated*2.0, 0,1,1);   // Red ball rotates at twice the rate of blue ball.
+       glutSolidSphere (0.5, 20, 20);
+    glPopMatrix ();
+
+    glColor3f (0.2, 0.2, 0.1);              // Red ball displaced to left.
+    glPushMatrix ();
+       glTranslatef    (0.0, 0.0, 0.0);
+       glRotatef       (60.0, 1,0,0);
+       glRotatef       (zRotated*2.0, 0,1,1);   // Red ball rotates at twice the rate of blue ball.
+       glutSolidSphere (0.5, 20, 20);
     glPopMatrix ();
  
     glColor3f (0.1, 0.2, 0.8);              // Blue ball displaced to right.
@@ -40,7 +48,7 @@ void Draw_Spheres (void)
        glTranslatef    (1.5, 0.0, 0.0);
        glRotatef       (60.0, 1,0,0);
        glRotatef       (zRotated, 0,0,1);
-       glutSolidSphere (1.0, 20, 50);
+       glutSolidSphere (1.0, 20, 20);
     glPopMatrix ();
 
     glutSwapBuffers();

@@ -1,6 +1,9 @@
 #ifndef __GALAXY_UI_SDL_WINDOW_H__
 #define __GALAXY_UI_SDL_WINDOW_H__
 
+#include <vector>
+#include <functional>
+
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include <GL/glu.h>
@@ -30,6 +33,11 @@ public:
   Vec3D GetCamLookAt() const;
   float GetFOV() const;
   int32_t GetFPS() const;
+
+  // TODO(Frank): Need a mutex.
+  void DrawFunc(std::function<void()> func) {
+    funcs.push_back(func);
+  }
 
   void SetDrawStats(bool draw) { draw_stats = draw; }
 
@@ -85,6 +93,8 @@ protected:
 
   volatile bool draw_stats;
   volatile bool running;
+
+  std::vector<std::function<void()>> funcs;
 
 private:
   void InitGL();

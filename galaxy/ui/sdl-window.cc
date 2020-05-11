@@ -135,7 +135,7 @@ SDLWindow::SDLWindow(int32_t width, int32_t height, float axis_len,
     : event(), fov(axis_len), width(0), height(0), fps(0), idx_snapshot(0),
       cam_pos(0, 0, 2), cam_look_at(0, 0, 0), cam_orient(0, 1, 0),
       p_screen(NULL), font_base(0), tex_star(0), draw_stats(false),
-      running(true) {
+      running(true), funcs() {
 
   CHECK_NE(SDL_Init(SDL_INIT_VIDEO), -1) << SDL_GetError();
   atexit(SDL_Quit);
@@ -415,6 +415,11 @@ void SDLWindow::Render() {
   if (draw_stats) {
     DrawStats();
   }
+
+  for (const auto& func : funcs) {
+    func();
+  }
+
   SDL_GL_SwapBuffers();
 }
 
