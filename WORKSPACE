@@ -20,3 +20,12 @@ http_archive(
         "https://github.com/abseil/abseil-cpp/archive/df3ea785d8c30a9503321a3d35ee7d35808f190d.tar.gz",
     ],
 )
+
+http_archive(
+    name = "com_google_gflags",
+    strip_prefix = "gflags-2.2.2",
+    urls = [
+        "https://github.com/gflags/gflags/archive/v2.2.2.tar.gz",
+    ],
+)
+

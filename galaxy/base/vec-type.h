@@ -16,7 +16,7 @@ struct Vec2D {
   float x;
   float y;
 
-  const string to_string();
+  const string to_string() const;
   void operator=(const Vec2D &other);
   bool operator==(const Vec2D &other) const;
 };
@@ -33,7 +33,7 @@ struct Vec3D {
   void NormalizedByMagnitudeWRT0();
   float MagnitudeWRT0() const;
 
-  const string to_string();
+  const string to_string() const;
   void operator=(const Vec3D &other);
   bool operator==(const Vec3D &other) const;
 };
@@ -58,7 +58,7 @@ struct Force {
   Vec3D direction;
   float magnitude;
 
-  const string to_string();
+  const string to_string() const;
   void operator=(const Force &other);
   bool operator==(const Force &other);
   Force operator+(const Force& other);

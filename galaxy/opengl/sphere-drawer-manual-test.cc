@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 
+#include "galaxy/base/logging.h"
 #include "galaxy/base/types.h"
 #include "galaxy/base/vec-type.h"
 #include "galaxy/ui/sdl-window.h"
@@ -29,23 +30,40 @@ void mod(SDLWindow *window) {
 
   window->SetDrawStats(true);
 
+  Vec3D c(0.2, 0.8, 0.1);
+  Sphere the_center(Vec3D(0.0, 0.0, 0.0), 1000, 100000, Vec3D(0, 0, 0), Vec3D(0, 1, 0));
+  window->DrawFunc([=] {
+    LOG(DEBUG) << the_center.center.to_string();
+    opengl::DrawSphere(1.0, the_center, c); 
+  });
 
-  // opengl::SphereDrawer drawer;
-
-  Vec3D center(0.0f, 0.0f, 0.0f);
-  float radius = 10000;
+  Vec3D center(10000.0f, 0.0f, 0.0f);
+  float radius = 1000;
   float mass = 0.1;
-  Sphere a(center, radius, mass); 
+  Vec3D rotation(0.0f, 1.0f, 0.0f);
+  Vec3D velocity(1.0f, 0.0f, 0.0f);
 
+  // TODO(Frank): Really bad resources management here. Using invalid memory.
+  Sphere a(center, radius, mass, velocity, rotation); 
   Vec3D red(0.8, 0.2, 0.1);
+  // TODO(Frank): This won't work since you cannot change the parameters any more.
+  window->DrawFunc([=] {
+    LOG(DEBUG) << a.center.to_string();
+    opengl::DrawSphere(1.0, a, red); 
+  });
 
-  window->DrawFunc([&] { opengl::DrawSphere(1.0, a, red); });
-  
+  // while (true) {
+  //   a.center.x += a.velocity.x;
+  //   a.center.y += a.velocity.y;
+  //   a.center.z += a.velocity.z;
+  // }
+
+  // window->RenderNumFrames(600);
 }
 
 // Launch the SDL window without drawing anything.
 int32_t main(int32_t argc, char **argv) {
-  auto window = SDLWindow(500, 500, 35000.0, "Some Randon Caption");
+  auto window = SDLWindow(2000, 2000, 35000.0, "Some Randon Caption");
   window.Init();
 
   opengl::DrawerInit(argc, argv);

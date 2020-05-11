@@ -9,9 +9,9 @@ namespace galaxy {
 struct Sphere {
 public:
   Sphere();
-  Sphere(const Vec3D &center, const float radius, const float mass);
-  Sphere(const Vec3D &center, const float radius, const float mass,
-         const Vec3D &velocity, const Vec3D &self_rotation);
+  Sphere(const Vec3D center, const float radius, const float mass);
+  Sphere(const Vec3D center, const float radius, const float mass,
+         const Vec3D velocity, const Vec3D self_rotation);
 
   Vec3D center;
   // in m

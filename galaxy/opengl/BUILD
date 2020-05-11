@@ -24,6 +24,7 @@ cc_binary(
     deps = [
         ":sphere-drawer",
         "//galaxy/ui:sdl-window",
+        "//galaxy/base:logging",
         "//galaxy/base:types",
         "//galaxy/base:vec-type",
         "//galaxy/stars/base:sphere",

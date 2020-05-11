@@ -2,3 +2,5 @@
 build:common --copt='-std=c++14' --copt='-Wall'
 build:native-opt -c opt --config=common --copt='-O3' --copt='-ffast-math' --copt='-march=native' --copt='-mtune=native'
 build:debug -c dbg --config=common --copt='-O0' --copt='-g0'
+
+build:asan --strip=never --copt='-fsanitize=address' --copt='-DADDRESS_SANITIZER' --copt='-fno-omit-frame-pointer' --linkopt='-fsanitize=address'

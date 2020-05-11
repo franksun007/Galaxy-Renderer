@@ -34,7 +34,12 @@ public:
   float GetFOV() const;
   int32_t GetFPS() const;
 
+  void RenderNumFrames(const int32_t f) {
+    max_frame = f;
+  }
+
   // TODO(Frank): Need a mutex.
+  // TODO(Frank): Need a better design for resources management.
   void DrawFunc(std::function<void()> func) {
     funcs.push_back(func);
   }
@@ -95,6 +100,9 @@ protected:
   volatile bool running;
 
   std::vector<std::function<void()>> funcs;
+
+  // For testing and debug
+  int32_t max_frame;
 
 private:
   void InitGL();

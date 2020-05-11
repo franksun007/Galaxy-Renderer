@@ -13,7 +13,7 @@ constexpr float kEpsilon = 1e-7;
 
 Vec2D::Vec2D(const float x, const float y) : x(x), y(y) {}
 
-const string Vec2D::to_string() {
+const string Vec2D::to_string() const {
   return absl::StrFormat("(%.3f, %.3f)", x, y);
 }
 
@@ -29,7 +29,7 @@ bool Vec2D::operator==(const Vec2D &other) const {
 Vec3D::Vec3D(const float x, const float y, const float z)
     : x(x), y(y), z(z) {}
 
-const string Vec3D::to_string() {
+const string Vec3D::to_string() const {
   return absl::StrFormat("(%.3f, %.3f, %.3f)", x, y, z);
 }
 
@@ -55,7 +55,7 @@ float Vec3D::MagnitudeWRT0() const {
   return std::sqrt(x * x + y * y + z * z);
 }
 
-const string Force::to_string() {
+const string Force::to_string() const {
   return absl::StrFormat("[P: %s, D: %s, M: %.3f]", point.to_string(), direction.to_string(), magnitude);
 }
 void Force::operator=(const Force &other) {
