@@ -9,6 +9,7 @@ cc_library(
         "//galaxy/base:types",
         "//galaxy/base:vec-type",
         "//galaxy/base:logging",
+        "//galaxy/opengl:renderer-interface",
         "@com_google_absl//absl/strings",
     ],
     data = ["//textures"],

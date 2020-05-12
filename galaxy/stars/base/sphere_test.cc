@@ -13,10 +13,11 @@ TEST(TestSphere, test_constructor) {
   const float default_mass = 10000;
   const Vec3D default_velocity = Vec3D(1, 1, 0);
   const Vec3D default_self_rotation = Vec3D(0, 1, 0);
-  
+
   Sphere a;
   Sphere b(default_center, default_radius, default_mass);
-  Sphere c(default_center, default_radius, default_mass, default_velocity, default_self_rotation);
+  Sphere c(default_center, default_radius, default_mass, default_velocity,
+           default_self_rotation);
 
   ASSERT_EQ(a.center, default_center);
   ASSERT_EQ(b.center, default_center);

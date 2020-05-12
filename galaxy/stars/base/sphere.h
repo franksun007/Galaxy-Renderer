@@ -13,6 +13,14 @@ public:
   Sphere(const Vec3D center, const float radius, const float mass,
          const Vec3D velocity, const Vec3D self_rotation);
 
+  Sphere(const Sphere &s) {
+    center = s.center;
+    center = s.radius;
+    center = s.mass;
+    center = s.velocity;
+    center = s.self_rotation;
+  }
+
   Vec3D center;
   // in m
   float radius;

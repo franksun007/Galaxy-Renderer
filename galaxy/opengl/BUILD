@@ -6,6 +6,7 @@ cc_library(
     srcs = ["sphere-drawer.cc"],
     hdrs = ["sphere-drawer.h"],
     deps = [
+        ":renderer-interface",
         "//galaxy/base:vec-type",
         "//galaxy/base:logging",
         "//galaxy/stars/base:sphere",
@@ -23,10 +24,16 @@ cc_binary(
     copts = [],
     deps = [
         ":sphere-drawer",
+        "//galaxy:context",
         "//galaxy/ui:sdl-window",
         "//galaxy/base:logging",
         "//galaxy/base:types",
         "//galaxy/base:vec-type",
         "//galaxy/stars/base:sphere",
     ],
+)
+
+cc_library(
+    name = "renderer-interface",
+    hdrs = ["renderer-interface.h"],
 )

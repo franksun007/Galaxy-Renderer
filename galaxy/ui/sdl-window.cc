@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <mutex>
 #include <sstream>
 
 #include <GL/glx.h>
@@ -131,11 +132,11 @@ Vec3D SDLWindow::GetOGLPos(int32_t x, int32_t y) {
 }
 
 SDLWindow::SDLWindow(int32_t width, int32_t height, float axis_len,
-                     const string &caption)
+                     const string &caption, std::mutex *lock)
     : event(), fov(axis_len), width(0), height(0), fps(0), idx_snapshot(0),
       cam_pos(0, 0, 2), cam_look_at(0, 0, 0), cam_orient(0, 1, 0),
       p_screen(NULL), font_base(0), tex_star(0), draw_stats(false),
-      running(true), funcs(), max_frame(-1) {
+      running(true), funcs(), max_frame(-1), lock(lock) {
 
   CHECK_NE(SDL_Init(SDL_INIT_VIDEO), -1) << SDL_GetError();
   atexit(SDL_Quit);
@@ -423,8 +424,9 @@ void SDLWindow::Render() {
     DrawStats();
   }
 
-  for (auto& func : funcs) {
-    func();
+  for (auto func : funcs) {
+    func->Update();
+    func->Draw();
   }
 
   SDL_GL_SwapBuffers();

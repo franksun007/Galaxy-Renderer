@@ -11,6 +11,8 @@ namespace galaxy {
 struct Vec2D {
  public:
   Vec2D(const float x = 0.f, const float y = 0.f);
+  
+  Vec2D(const Vec2D &v) { x = v.x; y = v.y; }
 
   // Public field for easy access
   float x;
@@ -24,6 +26,8 @@ struct Vec2D {
 struct Vec3D {
  public:
   Vec3D(const float x = 0.f, const float y = 0.f, const float z = 0.f);
+
+  Vec3D(const Vec3D &v) { x = v.x; y = v.y; z = v.z; }
 
   // Public field for easy access
   float x;

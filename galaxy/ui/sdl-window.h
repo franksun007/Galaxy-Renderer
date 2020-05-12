@@ -1,8 +1,9 @@
 #ifndef __GALAXY_UI_SDL_WINDOW_H__
 #define __GALAXY_UI_SDL_WINDOW_H__
 
-#include <vector>
 #include <functional>
+#include <mutex>
+#include <vector>
 
 #include <GL/gl.h>
 #include <GL/glext.h>
@@ -13,13 +14,14 @@
 
 #include "galaxy/base/types.h"
 #include "galaxy/base/vec-type.h"
+#include "galaxy/opengl/renderer-interface.h"
 
 namespace galaxy {
 
 class SDLWindow {
 public:
   SDLWindow(int32_t width, int32_t height, float axis_len,
-            const string &caption);
+            const string &caption, std::mutex *lock);
   virtual ~SDLWindow();
   void Init();
   void MainLoop();
@@ -34,14 +36,12 @@ public:
   float GetFOV() const;
   int32_t GetFPS() const;
 
-  void RenderNumFrames(const int32_t f) {
-    max_frame = f;
-  }
+  void RenderNumFrames(const int32_t f) { max_frame = f; }
 
   // TODO(Frank): Need a mutex.
   // TODO(Frank): Need a better design for resources management.
-  void DrawFunc(std::function<void()> func) {
-    funcs.push_back(func);
+  void RegisterRenderer(RendererInterface *renderer) {
+    funcs.push_back(renderer);
   }
 
   void SetDrawStats(bool draw) { draw_stats = draw; }
@@ -99,10 +99,12 @@ protected:
   volatile bool draw_stats;
   volatile bool running;
 
-  std::vector<std::function<void()>> funcs;
+  std::vector<RendererInterface *> funcs;
 
   // For testing and debug
   int32_t max_frame;
+
+  std::mutex *lock;
 
 private:
   void InitGL();
