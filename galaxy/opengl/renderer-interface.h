@@ -4,11 +4,11 @@
 namespace galaxy {
 
 class RendererInterface {
-public: 
-    virtual void Update() = 0;
-    virtual void Draw() = 0;    
+public:
+  virtual void Update() = 0;
+  virtual void Draw() = 0;
 };
 
-}  // namespace galaxy
+} // namespace galaxy
 
-#endif  // __GALAXY_OPENGL_RENDERER_INTERFACE_H__
+#endif // __GALAXY_OPENGL_RENDERER_INTERFACE_H__
