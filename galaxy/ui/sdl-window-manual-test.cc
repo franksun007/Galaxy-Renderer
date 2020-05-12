@@ -1,6 +1,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <mutex>
 #include <thread>
 
 #include "sdl-window.h"
@@ -31,7 +32,8 @@ void mod(SDLWindow *window) {
 
 // Launch the SDL window without drawing anything.
 int32_t main(int32_t argc, char **argv) {
-  auto window = SDLWindow(500, 500, 35000.0, "Some Randon Caption");
+  std::mutex mu;
+  auto window = SDLWindow(500, 500, 35000.0, "Some Randon Caption", &mu);
   window.Init();
 
   std::thread my_thread(mod, &window);

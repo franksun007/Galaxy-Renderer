@@ -86,12 +86,12 @@ void mod(Context *context) {
   window->SetDrawStats(true);
 
   Sphere* the_center = context->Borrow<Sphere>();
-  the_center = new (the_center) Sphere(Vec3D(0.0, 0.0, 0.0), 1000, 10000000, Vec3D(0, 0, 0), Vec3D(0, .8, 0));
+  the_center = new (the_center) Sphere(Vec3D(0.0, 0.0, 0.0), 1000, 10000000, Vec3D(0, 0, 0), Vec3D(0, 1, 0));
 
   Vec3D center(opengl::kDefaultDistance, 0.0f, 0.0f);
   float radius = 100000;
   float mass = 1000000;
-  Vec3D rotation(0.0f, 0.2f, 0.0f);
+  Vec3D rotation(0.0f, 1.0f, 0.0f);
   Vec3D velocity(0.f, opengl::kInitialVelocityY, 0.0f);
 
   Vec3D red(0.8, 0.2, 0.1);
