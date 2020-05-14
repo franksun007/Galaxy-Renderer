@@ -8,6 +8,7 @@ cc_library(
         "//galaxy/base:constants",
         "//galaxy/base:types",
         "//galaxy/base:vec-type",
+        "@com_google_absl//absl/strings",
     ]
 )
 

@@ -1,6 +1,8 @@
 #ifndef __GALAXY_OPENGL_RENDERER_INTERFACE_H__
 #define __GALAXY_OPENGL_RENDERER_INTERFACE_H__
 
+#include <memory>
+
 namespace galaxy {
 
 class RendererInterface {

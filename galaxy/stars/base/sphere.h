@@ -15,10 +15,10 @@ public:
 
   Sphere(const Sphere &s) {
     center = s.center;
-    center = s.radius;
-    center = s.mass;
-    center = s.velocity;
-    center = s.self_rotation;
+    radius = s.radius;
+    mass = s.mass;
+    velocity = s.velocity;
+    self_rotation = s.self_rotation;
   }
 
   Vec3D center;
@@ -30,6 +30,8 @@ public:
   // TODO(Frank): Whether to include those fields or not
   Vec3D velocity;
   Vec3D self_rotation;
+
+  string to_string() const;
 
   float SurfaceArea() const;
   float Volumn() const;

@@ -21,7 +21,7 @@ namespace galaxy {
 class SDLWindow {
 public:
   SDLWindow(int32_t width, int32_t height, float axis_len,
-            const string &caption, std::mutex *lock);
+            const string &caption);
   virtual ~SDLWindow();
   void Init();
   void MainLoop();
@@ -103,8 +103,6 @@ protected:
 
   // For testing and debug
   int32_t max_frame;
-
-  std::mutex *lock;
 
 private:
   void InitGL();

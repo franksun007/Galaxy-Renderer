@@ -4,6 +4,7 @@
 
 #include "renderer-interface.h"
 
+#include "galaxy/base/macros.h"
 #include "galaxy/base/vec-type.h"
 #include "galaxy/stars/base/sphere.h"
 
@@ -14,24 +15,20 @@ void DrawerInit(int argc, char **argv);
 
 class SphereDrawer : public RendererInterface {
 public:
-  // TODO(Frank): scale? color?
-  SphereDrawer(const float scale, Sphere *sphere, Vec3D color);
+  static SphereDrawer* Create(void *desired_memory, const float scale, const Sphere& sphere, const Vec3D& color);
 
   void Update();
-  void Draw();
+  void Draw(); 
 
-  SphereDrawer(const SphereDrawer &sd) {
-    scale = sd.scale;
-    sphere = sd.sphere;
-    color = sd.color;
-    rotate = sd.rotate;
-  }
+private:
+  SphereDrawer(const float scale, const Sphere& sphere, const Vec3D& color);
 
-protected:
   float scale;
-  Sphere *sphere;
+  Sphere sphere;
   Vec3D color;
   float rotate;
+
+  DISALLOW_COPY_AND_ASSIGN(SphereDrawer);
 };
 
 } // namespace opengl

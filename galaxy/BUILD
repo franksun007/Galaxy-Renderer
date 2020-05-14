@@ -5,11 +5,15 @@ cc_library(
     # srcs = ["context.cc"],
     hdrs = ["context.h"],
     deps = [
+        ":interface-object-registry",
         "//galaxy/base:logging",
         "//galaxy/base:memory",
         "//galaxy/ui:sdl-window",
-        # "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings",
     ],
-    # data = ["//textures"],
 )
 
+cc_library(
+    name = "interface-object-registry",
+    hdrs = ["interface-object-registry.h"],
+)
